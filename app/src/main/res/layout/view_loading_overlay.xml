@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 通用加载遮罩层：半透明底色 + 居中的转圈图标（默认不带文字）。
+
+     用法由 [com.ruwen.audioplayer.ui.util.LoadingOverlay] 统一控制：
+     它被加到 Activity 的 content 容器（android.R.id.content）里，
+     因此覆盖整屏（含标题栏），并且：
+       - clickable=true  → 吃掉所有触摸，「点一下屏幕加载特效就消失」的问题不复存在
+       - elevation=32dp  → 盖在 AppBarLayout(6dp) / 底部操作栏(8dp) 之上，不会被压在下面
+       - 返回键由 LoadingOverlay 用 OnBackPressedDispatcher 拦截
+
+     中间的 TextView 默认是 gone：只有确实需要展示进度的场景（「导入整个文件夹」的
+     「已处理 x / 共 y」）才会由 updateMessage() 打开它。 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/loading_scrim"
+    android:clickable="true"
+    android:elevation="32dp"
+    android:focusable="true"
+    android:importantForAccessibility="noHideDescendants"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- 图标与文案都用白色：scrim 是黑 32%，压在白色内容上后底色约为 #ADADAD，
+             紫色（#7C3AED）在这种灰底上反而发闷，白色更跳、也是遮罩上进度指示的常规做法。 -->
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:indicatorColor="@android:color/white"
+            app:indicatorSize="48dp"
+            app:trackColor="#33FFFFFF" />
+
+        <TextView
+            android:id="@+id/loadingMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</FrameLayout>

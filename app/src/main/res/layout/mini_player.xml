@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 底部常驻迷你播放栏。结构自上而下 = 内容行 + 4dp 进度条。
+     内容行里，封面在左，右边一列是「标题 + 行内进度条」。
+
+     两种形态由宿主页面通过 MiniPlayerController(progressAsDivider) 决定：
+       - **下方紧接底部导航**（MainActivity）：用**贴底**的那根进度条
+         （bg_mini_player_progress）兼作迷你栏与导航之间的分隔线，标题可占两行，
+         标题下方的行内进度条隐藏；
+       - **迷你栏单独存在**（播放列表详情页 / 播客详情页，下面没有导航）：
+         进度条显示在**标题下方**（bg_mini_player_progress_plain），贴底那根隐藏，
+         标题保持一行——这就是最早期的形态。
+     两根进度条由 MiniPlayerController 按场景切换显隐，进度值同时写入两者。
+
+     配色按 Material 3 的 tonal elevation：底部区块用比页面更深的 surface-container，
+     层级靠色调区分而不是阴影，因此这里**不设 elevation**。
+
+     注意：本布局只做展示与点击，不含任何额外功能（无拖动进度 / 无歌单弹窗 / 无滑动删除）。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mini_player_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/mini_player_height"
+    android:orientation="vertical"
+    android:background="@color/surface_variant"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp">
+
+        <!-- 不设 android:tint：有封面时要显示原图，tint 由 MiniPlayerController 按需设置 -->
+        <ImageView
+            android:id="@+id/mini_player_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_music_note"
+            android:contentDescription="@null" />
+
+        <!-- 右侧一列：标题 + 行内进度条 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mini_player_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+
+            <!-- 标题下方的进度条：只在迷你栏单独存在（下面没有导航）时显示 -->
+            <ProgressBar
+                android:id="@+id/mini_player_progress_inline"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="4dp"
+                android:max="1000"
+                android:progress="0"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/bg_mini_player_progress_plain"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/mini_player_play_pause"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_play"
+            android:tint="@color/text_primary"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/mini_player_play_pause" />
+
+    </LinearLayout>
+
+    <!-- 贴底进度条：仅在下方紧接底部导航时显示，兼作迷你栏与导航之间的分隔线 -->
+    <ProgressBar
+        android:id="@+id/mini_player_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:max="1000"
+        android:progress="0"
+        android:indeterminate="false"
+        android:progressDrawable="@drawable/bg_mini_player_progress" />
+
+</LinearLayout>

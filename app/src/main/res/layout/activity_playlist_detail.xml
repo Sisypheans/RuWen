@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 根布局为垂直 LinearLayout：标题栏 / 列表区 / 迷你播放栏。
+     迷你播放栏**参与布局**（而不是覆盖在列表上）：
+     列表高度会自动缩短到标题栏与迷你栏之间，滚到底时最后一项紧贴迷你栏，
+     因此**不需要**为它做任何 padding 补偿，也不会多出空白。
+     FAB 放在列表区这一层里，自然浮在列表之上、不会被迷你栏盖住。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <!-- liftOnScroll 显式关闭：Material 3 的实现是「滚动时把背景换成 surfaceContainer」，
+         会让紫色标题栏变浅灰。这里改为恒定 elevation 阴影，把列表与标题栏在视觉上分开。
+         AppBarLayout 自身必须有背景色，否则没有轮廓、阴影绘制不出来。 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_primary"
+        android:elevation="6dp"
+        app:liftOnScroll="false"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_primary"
+            app:titleTextColor="@color/text_on_primary"
+            app:popupTheme="@style/ThemeOverlay.RuWen.PopupMenu" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 列表区：占满标题栏与迷你栏之间的全部剩余空间 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- paddingBottom 只需给 FAB 让位（迷你栏不再覆盖列表，故不计入） -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/list_bottom_padding" />
+
+        <LinearLayout
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_music_note"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_audio"
+                android:textSize="16sp"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/empty_add_audio_hint"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:contentDescription="@string/add_audio"
+            android:src="@drawable/ic_add"
+            app:tint="@color/text_on_primary"
+            app:backgroundTint="@color/purple_primary" />
+
+    </FrameLayout>
+
+    <!-- 多选操作栏：进入「选择」即显示（不再要求至少勾选一条，否则手动清空勾选后
+         「全选」按钮会跟着整条栏一起消失，等于把自己锁死）。
+         此时迷你播放栏会被隐藏（MiniPlayerController.suppressed = true），
+         所以底部始终只有一条栏，不会出现两条叠在一起。
+
+         分两行是因为四个按钮 + 计数文案挤在一行放不下（窄屏尤其明显）：
+           第一行 = 已选 N 项 + 全选 + 取消（作用于「选哪些」）
+           第二行 = 生成字幕 + 删除（作用于「对选中的做什么」） -->
+    <LinearLayout
+        android:id="@+id/selectionActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvSelectionCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelectAll"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:text="@string/select_all"
+                android:textColor="@color/purple_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelSelection"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:text="@string/cancel"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBatchGenerate"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/batch_generate_subtitle"
+                android:textColor="@color/purple_primary"
+                app:icon="@drawable/ic_subtitle"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconTint="@color/purple_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBatchDelete"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/batch_delete"
+                android:textColor="@color/error"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconTint="@color/error" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 底部常驻迷你播放栏：占据真实空间，仅在播放/已加载音频时显示 -->
+    <!-- 必须在这里也引用 @dimen/mini_player_height：
+         <include> 上写的 layout_width/layout_height 会**覆盖**被包含布局根 View 的对应属性，
+         若写成 wrap_content，则 mini_player.xml 里设的高度整份失效（高度只会由内容决定）。 -->
+    <include
+        layout="@layout/mini_player"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mini_player_height" />
+
+</LinearLayout>

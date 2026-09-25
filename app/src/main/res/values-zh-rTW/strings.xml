@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">如聞</string>
+    <string name="playlists">播放列表</string>
+    <string name="create_playlist">創建播放列表</string>
+    <string name="edit_playlist">編輯播放列表</string>
+    <string name="delete_playlist">刪除播放列表</string>
+    <string name="playlist_name">播放列表名稱</string>
+    <string name="playlist_name_empty">名稱不能為空</string>
+    <string name="nav_home">首頁</string>
+    <string name="nav_podcast">播客</string>
+    <string name="nav_search">搜索</string>
+    <string name="no_podcast">還沒有訂閱播客，去「搜索」頁添加</string>
+    <string name="add_by_rss">通過RSS地址添加博客</string>
+    <string name="search_apple">搜索Apple Podcasts</string>
+    <string name="search_podcast_index">搜索博客索引</string>
+    <string name="import_opml">導入博客列表OPML</string>
+    <!-- 搜索页竖排入口用的短标签（完整句在行内会被截断） -->
+    <string name="entry_add_by_rss">RSS 地址</string>
+    <string name="entry_search_apple">Apple Podcasts</string>
+    <string name="entry_search_podcast_index">博客索引</string>
+    <string name="entry_import_opml">OPML 導入</string>
+    <string name="entry_section_other">其他添加方式</string>
+    <string name="search_box_hint">搜索播客</string>
+    <string name="search_empty">沒有找到相關播客</string>
+    <string name="search_failed">搜索失敗：%1$s</string>
+    <string name="enter_keyword">請輸入關鍵詞</string>
+    <string name="subscribe_success">已訂閱：%1$s</string>
+    <string name="subscribe_failed">訂閱失敗：%1$s</string>
+    <string name="already_subscribed">該播客已訂閱</string>
+    <string name="rss_url_hint">RSS 地址</string>
+    <string name="opml_importing">正在導入 %1$d / %2$d</string>
+    <string name="opml_import_done">導入完成：成功 %1$d，失敗 %2$d</string>
+    <string name="opml_empty">OPML 裡沒有可訂閱的播客</string>
+    <string name="opml_read_failed">讀取 OPML 失敗：%1$s</string>
+    <string name="download">下載</string>
+    <string name="podcast_detail">詳情</string>
+    <string name="podcast_sort">排序</string>
+    <string name="podcast_refresh">刷新</string>
+    <string name="podcast_unsubscribe">取消訂閱</string>
+    <string name="sort_by_title">按標題</string>
+    <string name="sort_by_date">按日期</string>
+    <string name="sort_asc">正序</string>
+    <string name="sort_desc">倒序</string>
+    <string name="confirm_unsubscribe">確認取消訂閱？該播客已下載的音頻、相關字幕會被刪除，並會從播放列表中移除。</string>
+    <string name="select_all">全選</string>
+    <string name="deselect_all">取消全選</string>
+    <string name="status_downloaded">已下載</string>
+    <string name="status_not_downloaded">未下載</string>
+    <string name="status_downloading">下載中</string>
+    <string name="status_download_failed">下載失敗</string>
+    <string name="confirm_delete_episodes">確認刪除所選單集的下載？本地音頻文件與相關字幕會被刪除，並會從播放列表中移除這些音頻。</string>
+    <string name="confirm_delete_single_download">確認刪除該單集的下載？本地音頻文件與相關字幕會被刪除，並會從播放列表中移除該音頻。</string>
+    <string name="refresh_done">已刷新，新增 %1$d 集</string>
+    <string name="refresh_failed">刷新失敗：%1$s</string>
+    <string name="download_failed">下載失敗：%1$s</string>
+    <string name="count_audios">%1$d 首</string>
+
+    <!-- 播客详情信息页（「详情」按钮） -->
+    <string name="podcast_info_rss">RSS 地址</string>
+    <string name="podcast_info_website">站點</string>
+    <string name="podcast_info_description">節目簡介</string>
+    <string name="podcast_info_absent">未提供</string>
+    <string name="podcast_info_no_description">該播客沒有提供簡介</string>
+    <string name="podcast_stats_episodes">單集數：%1$d</string>
+    <string name="podcast_stats_duration">總時長：%1$d 小時 %2$d 分</string>
+    <string name="podcast_stats_downloaded">已下載：%1$d</string>
+
+    <!-- 在线预览页（点搜索结果条目进入，不自动订阅） -->
+    <string name="preview_episodes">單集預覽</string>
+    <string name="preview_no_episodes">這個播客暫時沒有可預覽的單集</string>
+    <string name="preview_failed">讀取播客失敗：%1$s</string>
+
+    <!-- 字幕生成：面向用户的错误文案（原先硬编码在 WhisperManager 里，会经 subtitleError 直接显示） -->
+    <string name="subtitle_err_native_library">Whisper 原生庫未加載，字幕生成不可用（請確認 NDK 構建產物已正確打包）</string>
+    <string name="subtitle_err_model_missing">未找到模型：請在「設置 → 模型設置」中選擇並下載一個模型</string>
+    <string name="subtitle_err_model_init">Whisper 模型初始化失敗（模型可能損壞或不被支持）</string>
+    <string name="subtitle_err_cancelled">字幕生成已取消</string>
+    <string name="subtitle_err_empty_result">識別結果為空，請檢查音頻是否包含可識別的語音</string>
+    <string name="subtitle_err_open_file">無法打開音頻文件：%1$s</string>
+    <string name="subtitle_err_no_track">音頻文件中未找到音軌</string>
+    <string name="subtitle_err_input_buffer">無法獲取解碼器輸入緩衝區</string>
+    <string name="subtitle_err_output_buffer">無法獲取解碼器輸出緩衝區</string>
+    <string name="subtitle_err_decode_empty">解碼後無音頻數據</string>
+    <string name="subtitle_err_too_long">音頻過長，超出可處理範圍</string>
+    <string name="subtitle_err_model_not_ready">模型「%1$s」尚未就緒，請先在「設置 → 模型設置」中下載</string>
+    <string name="subtitle_err_pcm_prepare">無法為識別準備音頻數據（約 %1$dMB）：mmap=%2$s，direct=%3$s</string>
+
+    <!-- 字幕生成：前台通知 -->
+    <string name="subtitle_channel_name">字幕生成</string>
+    <string name="subtitle_channel_description">字幕生成進度通知</string>
+    <string name="subtitle_notification_generating">正在生成字幕…</string>
+    <string name="subtitle_notification_done_title">字幕生成完成</string>
+    <string name="subtitle_notification_done_text">點擊查看</string>
+    <string name="subtitle_notification_failed_title">字幕生成失敗</string>
+    <string name="subtitle_notification_progress">%1$d%% · 預計還需 %2$s</string>
+    <string name="subtitle_notification_progress_queued">%1$s · 隊列剩 %2$d 條</string>
+    <string name="subtitle_generating_plain">生成中…</string>
+
+    <!-- 预计剩余时间（原为 SubtitleUtils 里硬编码的「x 小时 x 分钟」） -->
+    <string name="eta_less_than_minute">不到 1 分鐘</string>
+    <string name="eta_minutes">%1$d 分鐘</string>
+    <string name="eta_hours_minutes">%1$d 小時 %2$d 分鐘</string>
+    <string name="error_unknown">未知錯誤</string>
+    <string name="menu_settings">設置</string>
+    <string name="menu_clear_cache">清除緩存</string>
+    <string name="clear_cache_confirm">將刪除不再被任何音頻或播放列表引用的封面、字幕等孤兒文件，確定繼續？</string>
+    <string name="clear_cache_done">已清理 %1$d 個文件</string>
+    <string name="subscribe">訂閱</string>
+    <string name="subscribing">訂閱中…</string>
+    <string name="episodes_downloading">開始下載 %1$d 集</string>
+    <string name="add_audio">添加音頻</string>
+    <string name="add_from_podcast">從播客添加</string>
+    <string name="no_downloaded_episodes">該播客還沒有已下載的單集</string>
+    <string name="podcast_file_missing">所選音頻文件已不存在，請重新下載</string>
+    <string name="unnamed_audio">未命名音頻</string>
+    <string name="import_audio">導入音頻</string>
+    <string name="generate_subtitle">生成字幕</string>
+    <string name="generating_subtitle">正在生成字幕...</string>
+    <string name="subtitle_ready">字幕已生成</string>
+    <string name="sleep_timer">睡眠定時</string>
+    <string name="sleep_timer_off">關閉定時</string>
+    <string name="sleep_timer_preset_title">定時時長</string>
+    <string name="sleep_timer_remaining">睡眠定時 · 剩餘 %1$s</string>
+    <string name="minutes_15">15 分鐘</string>
+    <string name="minutes_30">30 分鐘</string>
+    <string name="minutes_45">45 分鐘</string>
+    <string name="minutes_60">60 分鐘</string>
+    <string name="minutes_90">90 分鐘</string>
+    <string name="minutes_120">120 分鐘</string>
+    <string name="previous_track">上一首</string>
+    <string name="next_track">下一首</string>
+    <string name="play_pause">播放 / 暫停</string>
+    <string name="custom">自定義</string>
+    <string name="minutes">分鐘</string>
+    <string name="track_position">%1$d / %2$d</string>
+    <string name="shuffle_on">隨機播放已開啟</string>
+    <string name="shuffle_off">隨機播放已關閉</string>
+    <string name="single_loop">單曲循環</string>
+    <string name="list_loop">列表循環</string>
+    <string name="shuffle">隨機播放</string>
+    <string name="no_audio">暫無音頻</string>
+    <string name="no_playlist">暫無播放列表</string>
+    <string name="confirm">確定</string>
+    <string name="cancel">取消</string>
+    <string name="delete">刪除</string>
+    <string name="rename">重命名</string>
+    <string name="confirm_delete">確定要刪除嗎？</string>
+    <string name="storage_permission_required">需要存儲權限才能訪問音頻文件</string>
+    <string name="grant_permission">授予權限</string>
+    <string name="subtitle_not_generated">未生成字幕</string>
+    <string name="subtitle_queued">隊列中</string>
+    <string name="subtitle_failed">字幕生成失敗</string>
+    <string name="subtitle_failed_with_reason">字幕生成失敗：%1$s</string>
+    <string name="sleep_timer_set">睡眠定時已設置</string>
+    <string name="sleep_timer_finished">睡眠定時結束</string>
+    <string name="now_playing">正在播放</string>
+
+    <!-- 字幕生成进度与剩余时间 -->
+    <string name="subtitle_generating">生成中 %1$d%%</string>
+    <string name="subtitle_generating_with_eta">生成中 %1$d%% · 預計還需 %2$s</string>
+
+    <!-- 字幕识别模型设置 -->
+    <string name="menu_whisper_model">模型設置</string>
+    <string name="whisper_model_dialog_title">字幕識別模型</string>
+    <string name="whisper_model_language">識別語言</string>
+    <string name="whisper_model_download">下載</string>
+    <string name="whisper_model_downloaded">已下載</string>
+    <string name="whisper_model_not_downloaded_status">未下載</string>
+    <string name="whisper_model_size">大小 約 %1$s</string>
+    <string name="whisper_model_delete_confirm">確定刪除「%1$s」嗎？</string>
+    <string name="whisper_model_metered_confirm">當前為計量網絡（移動數據或按流量計費的 Wi-Fi）。\n\n確定要下載「%1$s」（約 %2$s）嗎？</string>
+    <string name="whisper_model_no_network">當前沒有可用網絡，無法下載模型。</string>
+    <string name="whisper_model_force_baseline">兼容模式</string>
+    <string name="whisper_model_word_timestamps">詞級時間戳</string>
+    <string name="whisper_model_downloading">正在下載模型…%1$d%%</string>
+    <string name="whisper_model_download_failed">模型下載失敗：%1$s</string>
+    <string name="whisper_model_download_ok">模型已下載</string>
+    <!-- 界面上没有任何模型被选中（例如刚切换过语言）时，点确定会提示 -->
+    <string name="whisper_model_pick_in_language">請先選擇一個「%1$s」模型</string>
+
+    <!-- 取消正在生成的字幕 -->
+    <string name="cancel_subtitle">取消生成</string>
+    <string name="cancel_subtitle_confirm">確定要取消這條音頻的字幕生成嗎？</string>
+
+    <!-- 音频列表：多选与批量操作 -->
+    <string name="select_audio">選擇</string>
+    <!-- 通用「排序」。播客页那句是 podcast_sort（文案相同但归在播客分组下，不共用） -->
+    <string name="sort">排序</string>
+    <string name="sort_playlist_by_title">按標題排序</string>
+    <string name="selected_count">已選 %1$d 項</string>
+    <string name="batch_generate_subtitle">生成字幕</string>
+    <string name="batch_delete">刪除</string>
+    <string name="batch_delete_confirm">確定要刪除選中的 %1$d 個音頻嗎？此操作不可撤銷。</string>
+    <string name="batch_nothing_to_generate">選中的音頻都已生成或正在生成，無需重複發起</string>
+
+    <!-- 音频列表：导入方式（系统文件选择器无法「全选」，改用导入整个文件夹达到同样效果） -->
+    <string name="import_audio_file">選擇音頻文件</string>
+    <string name="import_audio_folder">導入整個文件夾</string>
+    <string name="import_folder_empty">該文件夾下沒有找到音頻文件</string>
+    <string name="import_scanning">正在掃描文件夾…</string>
+    <string name="import_progress_count">正在導入 %1$d / %2$d</string>
+    <string name="import_done_count">已導入 %1$d 個音頻</string>
+    <string name="subtitle_cancelled">字幕生成已取消</string>
+    <string name="subtitle_cancelling">正在取消…</string>
+
+    <!-- 新增：国际化抽取的用户可见硬编码字符串 -->
+    <string name="notif_channel_playback">播放</string>
+    <string name="notif_channel_playback_desc">音樂播放通知</string>
+    <string name="notif_paused">已暫停</string>
+    <string name="notif_action_play">播放</string>
+    <string name="notif_action_pause">暫停</string>
+    <string name="err_podcast_save_failed">播客寫入失敗</string>
+    <string name="err_podcast_not_found">播客不存在</string>
+    <string name="err_podcastindex_creds">缺少 Podcast Index 憑據，請在 local.properties 配置 podcastIndex.apiKey / apiSecret</string>
+    <string name="err_search_failed">搜索失敗</string>
+    <string name="err_model_no_download">模型 %1$s 不支持下載，請使用內置版本</string>
+    <string name="err_storage_insufficient">存儲空間不足：需要 %1$s，可用 %2$s</string>
+    <string name="err_download_http">下載失敗：HTTP %1$s（最終地址 %2$s）</string>
+    <string name="err_download_not_model">下載失敗：服務端返回的不是模型文件（Content-Type=%1$s）。通常是下載被重定向或網絡被攔截，請檢查網絡後重試。</string>
+    <string name="err_download_empty">下載失敗：服務端返回空文件</string>
+    <string name="err_download_cancelled">下載已取消</string>
+    <string name="err_download_partial">下載失敗：只收到 %1$s 字節（%2$s），不是有效的模型文件。可能是網絡被攔截或下載被重定向。</string>
+    <string name="err_download_incomplete">下載不完整：收到 %1$s，應為 %2$s。請重試。</string>
+    <string name="err_download_write">下載失敗：無法寫入 %1$s</string>
+    <string name="err_download_redirect">下載失敗：重定向次數過多（最終 %1$s）</string>
+    <string name="err_download_no_connection">下載失敗：無法建立連接</string>
+    <string name="err_file_write_failed">文件寫入失敗</string>
+    <string name="err_http">HTTP %1$s</string>
+    <string name="dialog_delete_audio_title">刪除音頻</string>
+    <string name="dialog_delete_audio_msg">確定要刪除「%1$s」嗎？</string>
+    <string name="err_audio_missing">音頻不存在或已被刪除，跳過字幕生成</string>
+    <string name="empty_add_audio_hint">點擊右下角按鈕添加音頻</string>
+</resources>

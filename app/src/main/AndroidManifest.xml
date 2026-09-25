@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- 用于从 whisper.cpp 官方仓库下载量化小模型（small/base 档位不在 APK 内） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 播客 RSS 源里有相当比例仍是 http；Android 9+ 默认禁止明文流量，
+         不放行会导致这些源订阅/刷新失败。故此处允许明文网络请求（仅影响联网，不涉及本地数据）。 -->
+    <!-- 不参与云备份：本 App 的数据主体是本地下载的音频与图片缓存（动辄上 GB），
+         而 Auto Backup 每应用上限只有 25MB，超了会直接不备份（连订阅和播放列表一起失效）。
+         这些内容重装后重新订阅 / 导入即可获得，云端备份既放不下也无意义。 -->
+    <application
+        android:name=".RuWenApplication"
+        android:allowBackup="false"
+        android:extractNativeLibs="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="false"
+        android:theme="@style/Theme.RuWen"
+        android:usesCleartextTraffic="true">
+
+        <!-- windowSoftInputMode=adjustNothing：输入法弹起时**不**压缩/平移窗口，
+             键盘直接盖住底部导航与迷你播放栏，而不是把它们顶起来。
+             （对话框是独立窗口，不受此处影响，仍可正常为输入框让位。） -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.RuWen"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.player.PlayerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".ui.playlist.PlaylistDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".ui.podcast.PodcastDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen"
+            android:parentActivityName=".ui.MainActivity"
+            android:windowSoftInputMode="adjustNothing">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.podcast.PodcastInfoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen" />
+
+        <activity
+            android:name=".ui.podcast.OnlinePodcastPreviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen" />
+
+        <activity
+            android:name=".ui.search.PodcastSearchResultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RuWen"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <service
+            android:name=".service.PlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
+        <!-- WorkManager 内部前台服务：必须声明与前台类型一致，否则 Android 14+
+             （尤其 15/16）会因 foregroundServiceType 不匹配直接抛异常并崩溃进程。
+             对应 worker 中 setForeground(ForegroundInfo(..., DATA_SYNC))。 -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false"
+            tools:replace="android:foregroundServiceType" />
+
+    </application>
+
+</manifest>

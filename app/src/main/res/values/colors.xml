@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Purple primary colors -->
+    <color name="purple_primary">#7C3AED</color>
+    <color name="purple_dark">#6D28D9</color>
+    <color name="purple_light">#A78BFA</color>
+    <color name="purple_50">#FAF5FF</color>
+    <color name="purple_100">#F3E8FF</color>
+    <color name="purple_200">#E9D5FF</color>
+    <color name="purple_300">#D8B4FE</color>
+    <color name="purple_400">#C084FC</color>
+    <color name="purple_500">#A855F7</color>
+    <color name="purple_600">#9333EA</color>
+    <color name="purple_700">#7E22CE</color>
+    <color name="purple_800">#6B21A8</color>
+    <color name="purple_900">#581C87</color>
+
+    <!-- Secondary / accent -->
+    <color name="teal_accent">#14B8A6</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- 加载遮罩层的底色：Material Design 3 的 scrim 角色（#000000）按规范的 32% 不透明度使用。
+         M3 里 scrim 就是这一个值，modal / drawer / 遮罩类都用它在 32%，不按主题改颜色。 -->
+    <color name="loading_scrim">#52000000</color>
+
+    <!-- Background -->
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F9FAFB</color>
+    <color name="surface_variant">#F3F4F6</color>
+    <!-- 底部导航：比迷你播放栏再深一级。
+         这里是**没有照抄 AntennaPod** 的地方——AntennaPod 的迷你栏常驻，
+         可以和导航做成完全同色的同一块；我们的迷你栏会显隐，
+         两块必须各自有边界，所以按 Material 3 的 tonal elevation 分级：
+         内容区（白）→ 迷你播放栏（surface_variant）→ 底部导航（surface_container_high），
+         层级靠色调递进表达，全程**不用阴影**。 -->
+    <color name="surface_container_high">#E8EAED</color>
+
+    <!-- Divider -->
+    <color name="divider">#E5E7EB</color>
+    <!-- 迷你播放栏进度条的未播放轨道。
+         比 divider(#E5E7EB) 再深一档：之前用 divider 色画轨道，
+         在迷你栏底色 surface_variant(#F3F4F6) 上几乎看不出对比，
+         用户反馈「进度条没显示」，故单独给一个明显可见的灰。 -->
+    <color name="progress_track">#C9CED6</color>
+
+    <!-- Status -->
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
+
+    <!-- Player -->
+    <color name="player_background">#FAF5FF</color>
+    <color name="subtitle_text">#581C87</color>
+    <color name="subtitle_background">#F3E8FF</color>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 搜索页顶部的圆角搜索卡片（参照 AntennaPod addfeed 的 28dp 大圆角搜索条）。
+     只是「一块浅色圆角底 + 里面的图标和输入框」，输入框本身不再套边框。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/surface_variant" />
+    <corners android:radius="28dp" />
+</shape>

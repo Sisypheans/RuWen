@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 主宿主界面（单 Activity + 三 Fragment）：
+     结构自上而下 = 标题栏 / 页面容器 / 迷你播放栏 / 底部导航。
+     三个页面（首页=播放列表、播客、搜索）都以 Fragment 形式装进 navHostContainer，
+     由 MainActivity 根据底部导航切换；工具栏与迷你栏为全局共享，不随页面切换重建。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <!-- liftOnScroll 显式关闭：Material 3 的实现是「滚动时把背景换成 surfaceContainer」，
+         会让紫色标题栏变浅灰。这里改为恒定 elevation 阴影，把列表与标题栏在视觉上分开。 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_primary"
+        android:elevation="6dp"
+        app:liftOnScroll="false"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_primary"
+            app:titleTextColor="@color/text_on_primary"
+            app:popupTheme="@style/ThemeOverlay.RuWen.PopupMenu" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 页面容器：占满标题栏、迷你栏、底部导航之间的全部剩余空间 -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/navHostContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 迷你播放栏：占据真实空间，仅在播放/已加载音频时显示。
+         <include> 上的 layout_height 必须显式给 @dimen/mini_player_height，
+         否则会覆盖 mini_player.xml 根 View 的高度设置。 -->
+    <include
+        layout="@layout/mini_player"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mini_player_height" />
+
+    <!-- 底部导航：与上方的迷你播放栏靠**色调分级**区分，不用阴影分层。
+         没有照抄 AntennaPod 的「迷你栏 + 导航完全同色同一块」：那是因为它的迷你栏常驻，
+         而我们的迷你栏会显隐——显隐两种状态下导航都得有自己的边界，
+         所以导航比迷你栏再深一级（surface_container_high），迷你栏隐藏时也仍与内容区白底分开。
+         Material 组件默认带 8dp elevation，会把迷你栏投影出「浮起来」的分层感，故显式置 0。
+         高度显式 70dp：与迷你栏（80dp）互换（Material 默认 80dp）。 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/surface_container_high"
+        android:elevation="0dp"
+        app:menu="@menu/bottom_nav_menu" />
+
+</LinearLayout>

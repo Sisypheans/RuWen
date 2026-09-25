@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    音频列表条目标题的文字颜色：配合 bg_item_audio 的选中底色，
+    正在播放的那一条用主题强调色，其余用常规主文本色。
+    由 AudioItemAdapter 通过 itemView.isActivated 驱动 state_activated。
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:color="?attr/colorPrimary" />
+    <item android:color="@color/text_primary" />
+</selector>

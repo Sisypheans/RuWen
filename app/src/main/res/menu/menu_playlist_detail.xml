@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 音频列表页（播放列表详情）的工具栏菜单：以「三点」溢出菜单呈现。
+
+     两项都用 showAsAction="never"： toolbar 上没有任何 always 项时，
+     MaterialToolbar 才会显示三点溢出图标（早先是 showAsAction="always" 的
+     「全选」图标，直接常驻在工具栏右侧）。
+
+     两个入口语义固定，不再做状态循环：
+       - 选择：进入多选并全选，底部功能栏随之出现（功能栏自带「全选 / 取消」）
+       - 排序：按音频标题正序 / 倒序，结果写回播放顺序 -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_select"
+        android:title="@string/select_audio"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:title="@string/sort"
+        app:showAsAction="never" />
+
+</menu>

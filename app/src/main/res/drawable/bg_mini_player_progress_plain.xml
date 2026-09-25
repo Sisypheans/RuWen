@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 迷你栏「单独存在」时的进度条（页面里迷你栏下面没有底部导航，例如播放列表详情页、
+     播客详情页）。此时进度条不承担分隔线作用，就是一根普通进度条：
+     显示在标题行下方，未播放部分浅灰轨道、已播放部分主题紫。
+
+     轨道色必须与主页那套一致（progress_track）——早前用 divider 色画轨道，
+     在迷你栏底色上几乎看不见，被当成「进度条消失了」的 bug。 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/progress_track" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/purple_primary" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

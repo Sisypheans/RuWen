@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 工具栏上的「竖向三点」按钮：点击弹出设置菜单（模型设置 / 清除缓存），
+         菜单出现在按钮**左下方**（Gravity.END：菜单右缘对齐按钮右缘）。
+         注意：这里用的是 ic_more_vert 图标 + showAsAction="always"，
+         它是一个普通 action（不是 overflow 溢出菜单），所以是一次点击直达。 -->
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_more_vert"
+        android:title="@string/menu_settings"
+        app:showAsAction="always" />
+
+</menu>

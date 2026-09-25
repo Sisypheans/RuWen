@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 播放页工具栏菜单：睡眠定时放在工具栏（与 YouTube Music / Spotify 一致），
+     把底部控制区留给标准的「随机 / 上一首 / 播放 / 下一首 / 循环」五键布局。 -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sleep_timer"
+        android:icon="@drawable/ic_sleep_timer"
+        android:title="@string/sleep_timer"
+        app:showAsAction="always" />
+
+</menu>

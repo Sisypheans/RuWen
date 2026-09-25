@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 播放列表页与音频列表页**共用**的尺寸。
+     两处布局都引用这里，避免"两个页面的加号按钮位置不一致"；
+     MiniPlayerController 也读同一组值来算底部留白，保证幂等（不会被反复累加）。 -->
+<resources>
+    <!-- 列表底部留白：给右下角 FAB 让位 -->
+    <dimen name="list_bottom_padding">88dp</dimen>
+
+    <!-- FAB 与屏幕下边/右边的间距 -->
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

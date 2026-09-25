@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  播放页布局（参考 YouTube Music / Spotify / Apple Music 的通用结构）：
+    工具栏 → 封面卡片（固定尺寸，不再占据半屏）→ 标题/进度信息 → 字幕区（占满剩余空间）
+    → 底部控制区（进度条 + 时间 + 五键控制行）
+  整页不滚动，只有字幕卡片内部滚动——这是主流播放器的统一做法。
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/player_background">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_primary"
+        app:titleTextColor="@color/text_on_primary"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar" />
+
+    <!-- 内容区：weight=1 吃掉剩余高度，字幕卡片在其内部再按 weight 占满 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
+
+        <!-- 封面卡片：固定 132dp。默认展示占位音符图标；若音频有内嵌/播客封面则填充真实图片。 -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="132dp"
+            android:layout_height="132dp"
+            android:layout_gravity="center_horizontal"
+            app:cardBackgroundColor="@color/purple_100"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
+
+            <ImageView
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:padding="34dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_music_note"
+                app:tint="@color/purple_primary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <!-- 曲目位置信息，例如 “3 / 12” -->
+        <TextView
+            android:id="@+id/tvTrackInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <!-- 睡眠定时状态胶囊：仅在定时生效时显示，点击可修改/取消 -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipSleepTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/purple_primary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:chipBackgroundColor="@color/purple_200"
+            app:chipIcon="@drawable/ic_sleep_timer"
+            app:chipIconTint="@color/purple_primary"
+            app:chipStrokeWidth="0dp" />
+
+        <!-- 字幕显示区域：占满剩余空间。
+             外层 SwipeAwareFrameLayout 识别四向滑动手势：
+               左滑 / 右滑 → 上一段 / 下一段字幕；
+               上滑 → 回到当前字幕起点（重听当前段）；下滑 → 播放 / 暂停。
+             用户不需要手动滚动字幕（字幕由代码自动滚到顶部），故纵向手势整体接管，
+             不交给内层 ScrollView。tvSubtitle 的 id 与赋值逻辑保持不变。 -->
+        <com.ruwen.audioplayer.ui.player.SwipeAwareFrameLayout
+            android:id="@+id/swipeSubtitleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="4dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="130dp"
+                app:cardBackgroundColor="@color/subtitle_background"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <!-- 三行字幕：上一句 / 当前句 / 下一句。
+                     当前句通过「上下都约束到父容器 + 垂直居中」固定在卡片正中，
+                     上下两句分别贴在它的上方与下方——这样无论上下句多长多短，
+                     当前句始终在中间，不会随相邻句子的行数上下跳动。 -->
+                <com.ruwen.audioplayer.ui.player.LockableScrollView
+                    android:id="@+id/subtitleScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:padding="18dp"
+                    android:scrollbars="none">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tvSubtitlePrev"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toTopOf="@id/tvSubtitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constrainedHeight="true" />
+
+                        <TextView
+                            android:id="@+id/tvSubtitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:lineSpacingExtra="6dp"
+                            android:maxLines="3"
+                            android:ellipsize="end"
+                            android:text="@string/subtitle_not_generated"
+                            android:textColor="@color/subtitle_text"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constrainedHeight="true" />
+
+                        <TextView
+                            android:id="@+id/tvSubtitleNext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="15sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constrainedHeight="true" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.ruwen.audioplayer.ui.player.LockableScrollView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </com.ruwen.audioplayer.ui.player.SwipeAwareFrameLayout>
+
+    </LinearLayout>
+
+    <!-- 底部播放控制区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        android:background="@drawable/bg_player_controls">
+
+        <!-- 进度条 -->
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/purple_primary"
+            android:thumbTint="@color/purple_primary" />
+
+        <!-- 时间显示 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvTotalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!-- 控制按钮：随机 / 上一首 / 播放 / 下一首 / 循环（行业通用五键布局） -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnShuffle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/shuffle"
+                android:src="@drawable/ic_shuffle"
+                app:tint="@color/text_secondary" />
+
+            <ImageButton
+                android:id="@+id/btnPrevious"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/previous_track"
+                android:src="@drawable/ic_previous"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnPlayPause"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginHorizontal="24dp"
+                android:background="@drawable/bg_play_button"
+                android:contentDescription="@string/play_pause"
+                android:padding="18dp"
+                android:src="@drawable/ic_play"
+                app:tint="@color/text_on_primary" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/next_track"
+                android:src="@drawable/ic_next"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnRepeat"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/list_loop"
+                android:src="@drawable/ic_repeat"
+                app:tint="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

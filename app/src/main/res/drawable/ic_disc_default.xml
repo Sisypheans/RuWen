@@ -1,0 +1,32 @@
+<!-- 播放列表的默认封面（参考 Salt Player：浅灰圆角底 + 灰白光盘）。
+     用 vector（48dp 固有尺寸）而不是 layer-list：
+     layer-list 没有固有尺寸，内部各层会被整体缩放到 ImageView 尺寸，
+     圆角与光盘比例全部被放大（用户反馈"图标过度放大、很丑"）。
+     vector 有确定尺寸，缩放只按比例，观感稳定。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- 底：浅灰圆角方块 -->
+    <path
+        android:fillColor="#EEF0F2"
+        android:pathData="M8,0 H40 A8,8 0 0 1 48,8 V40 A8,8 0 0 1 40,48 H8 A8,8 0 0 1 0,40 V8 A8,8 0 0 1 8,0 Z" />
+
+    <!-- 光盘：白色大圆 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,11 A13,13 0 1 0 24,37 A13,13 0 1 0 24,11 Z" />
+
+    <!-- 盘面：中灰圆环 -->
+    <path
+        android:fillColor="#E5E7EB"
+        android:pathData="M24,16 A8,8 0 1 0 24,32 A8,8 0 1 0 24,16 Z" />
+
+    <!-- 中孔 -->
+    <path
+        android:fillColor="#EEF0F2"
+        android:pathData="M24,21.5 A2.5,2.5 0 1 0 24,26.5 A2.5,2.5 0 1 0 24,21.5 Z" />
+
+</vector>

@@ -1,0 +1,28 @@
+# Local configuration (SDK path & API credentials — never commit)
+local.properties
+
+# Gradle / build outputs
+.gradle/
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Native dependency: the whisper.cpp source (15 MB) is fetched by
+# scripts/setup_whisper.ps1 — do not commit the third-party source
+app/src/main/cpp/whisper/
+
+# Local tooling / session artifacts (not part of the project)
+.workbuddy/
+generated-images/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db

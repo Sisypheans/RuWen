@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 在线播客预览页（参照 AntennaPod 的 onlinefeedview + feeditemlist_header 的未订阅形态）：
+     点搜索结果条目进入，先展示播客内容（封面 / 标题 / 作者 / 简介 / 最近单集），
+     由用户在看过内容后**按「订阅」按钮**才真正订阅。
+     头部与单集列表同在一个列表里滚动（不固定），故用 ConcatAdapter。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_primary"
+        android:elevation="6dp"
+        app:liftOnScroll="false"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_primary"
+            app:titleTextColor="@color/text_on_primary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/episodeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp" />
+
+        <!-- 加载态已统一交给 LoadingOverlay 遮罩（ui/util/LoadingOverlay.kt）。
+             原先这里有一个 ProgressBar（id=loadingProgress），它没有写 android:visibility，
+             默认就是 visible —— Kotlin 侧不再控制它之后就会一直转，和遮罩叠成两个加载特效，故删除。 -->
+
+    </FrameLayout>
+
+    <!-- 订阅按钮：只有点它才会真正订阅 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:padding="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/subscribe" />
+
+    </LinearLayout>
+
+</LinearLayout>

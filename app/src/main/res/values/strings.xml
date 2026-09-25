@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default / fallback language: English. Chinese lives in values-zh. -->
+    <string name="app_name">RuWen</string>
+    <string name="playlists">Playlists</string>
+    <string name="create_playlist">Create playlist</string>
+    <string name="edit_playlist">Edit playlist</string>
+    <string name="delete_playlist">Delete playlist</string>
+    <string name="playlist_name">Playlist name</string>
+    <string name="playlist_name_empty">Name cannot be empty</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_podcast">Podcasts</string>
+    <string name="nav_search">Search</string>
+    <string name="no_podcast">No podcasts subscribed yet. Go to the Search tab to add one.</string>
+    <string name="add_by_rss">Add by RSS URL</string>
+    <string name="search_apple">Search Apple Podcasts</string>
+    <string name="search_podcast_index">Search Podcast Index</string>
+    <string name="import_opml">Import OPML</string>
+    <!-- Short labels for the vertical entries on the search page (full sentences get truncated) -->
+    <string name="entry_add_by_rss">RSS URL</string>
+    <string name="entry_search_apple">Apple Podcasts</string>
+    <string name="entry_search_podcast_index">Podcast Index</string>
+    <string name="entry_import_opml">OPML import</string>
+    <string name="entry_section_other">Other ways to add</string>
+    <string name="search_box_hint">Search podcasts</string>
+    <string name="search_empty">No podcasts found</string>
+    <string name="search_failed">Search failed: %1$s</string>
+    <string name="enter_keyword">Please enter a keyword</string>
+    <string name="subscribe_success">Subscribed: %1$s</string>
+    <string name="subscribe_failed">Subscription failed: %1$s</string>
+    <string name="already_subscribed">This podcast is already subscribed</string>
+    <string name="rss_url_hint">RSS URL</string>
+    <string name="opml_importing">Importing %1$d / %2$d</string>
+    <string name="opml_import_done">Import done: %1$d succeeded, %2$d failed</string>
+    <string name="opml_empty">No subscribable podcasts in the OPML file</string>
+    <string name="opml_read_failed">Failed to read OPML: %1$s</string>
+    <string name="download">Download</string>
+    <string name="podcast_detail">Details</string>
+    <string name="podcast_sort">Sort</string>
+    <string name="podcast_refresh">Refresh</string>
+    <string name="podcast_unsubscribe">Unsubscribe</string>
+    <string name="sort_by_title">By title</string>
+    <string name="sort_by_date">By date</string>
+    <string name="sort_asc">Ascending</string>
+    <string name="sort_desc">Descending</string>
+    <string name="confirm_unsubscribe">Unsubscribe? Downloaded audio and related subtitles of this podcast will be deleted, and it will be removed from playlists.</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="status_downloaded">Downloaded</string>
+    <string name="status_not_downloaded">Not downloaded</string>
+    <string name="status_downloading">Downloading</string>
+    <string name="status_download_failed">Download failed</string>
+    <string name="confirm_delete_episodes">Delete downloads of the selected episodes? Local audio files and related subtitles will be removed, and these audios will be removed from playlists.</string>
+    <string name="confirm_delete_single_download">Delete the download of this episode? Local audio file and related subtitles will be removed, and this audio will be removed from playlists.</string>
+    <string name="refresh_done">Refreshed, %1$d new episodes</string>
+    <string name="refresh_failed">Refresh failed: %1$s</string>
+    <string name="download_failed">Download failed: %1$s</string>
+    <string name="count_audios">%1$d tracks</string>
+
+    <!-- Podcast details info page (the "Details" button) -->
+    <string name="podcast_info_rss">RSS URL</string>
+    <string name="podcast_info_website">Website</string>
+    <string name="podcast_info_description">Show description</string>
+    <string name="podcast_info_absent">Not provided</string>
+    <string name="podcast_info_no_description">This podcast has no description</string>
+    <string name="podcast_stats_episodes">Episodes: %1$d</string>
+    <string name="podcast_stats_duration">Total duration: %1$d h %2$d min</string>
+    <string name="podcast_stats_downloaded">Downloaded: %1$d</string>
+
+    <!-- Online preview page (tap a search result to enter, no auto-subscribe) -->
+    <string name="preview_episodes">Episode preview</string>
+    <string name="preview_no_episodes">This podcast has no previewable episodes for now</string>
+    <string name="preview_failed">Failed to read podcast: %1$s</string>
+
+    <!-- Subtitle generation: user-facing error texts -->
+    <string name="subtitle_err_native_library">Whisper native library not loaded; subtitle generation is unavailable (make sure the NDK build output is packaged correctly)</string>
+    <string name="subtitle_err_model_missing">No model found: please select and download a model in Settings → Model settings</string>
+    <string name="subtitle_err_model_init">Whisper model initialization failed (model may be corrupted or unsupported)</string>
+    <string name="subtitle_err_cancelled">Subtitle generation cancelled</string>
+    <string name="subtitle_err_empty_result">Recognition result is empty; please check whether the audio contains recognizable speech</string>
+    <string name="subtitle_err_open_file">Cannot open audio file: %1$s</string>
+    <string name="subtitle_err_no_track">No audio track found in the audio file</string>
+    <string name="subtitle_err_input_buffer">Cannot get decoder input buffer</string>
+    <string name="subtitle_err_output_buffer">Cannot get decoder output buffer</string>
+    <string name="subtitle_err_decode_empty">No audio data after decoding</string>
+    <string name="subtitle_err_too_long">Audio is too long, exceeds the processable range</string>
+    <string name="subtitle_err_model_not_ready">Model \"%1$s\" is not ready; please download it first in Settings → Model settings</string>
+    <string name="subtitle_err_pcm_prepare">Cannot prepare audio data for recognition (~%1$dMB): mmap=%2$s, direct=%3$s</string>
+
+    <!-- Subtitle generation: foreground notification -->
+    <string name="subtitle_channel_name">Subtitle generation</string>
+    <string name="subtitle_channel_description">Subtitle generation progress notification</string>
+    <string name="subtitle_notification_generating">Generating subtitles…</string>
+    <string name="subtitle_notification_done_title">Subtitle generation complete</string>
+    <string name="subtitle_notification_done_text">Tap to view</string>
+    <string name="subtitle_notification_failed_title">Subtitle generation failed</string>
+    <string name="subtitle_notification_progress">%1$d%% · ~%2$s remaining</string>
+    <string name="subtitle_notification_progress_queued">%1$s · %2$d left in queue</string>
+    <string name="subtitle_generating_plain">Generating…</string>
+
+    <!-- Estimated remaining time -->
+    <string name="eta_less_than_minute">Less than 1 minute</string>
+    <string name="eta_minutes">%1$d min</string>
+    <string name="eta_hours_minutes">%1$d h %2$d min</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_clear_cache">Clear cache</string>
+    <string name="clear_cache_confirm">This will delete orphan files (covers, subtitles, etc.) no longer referenced by any audio or playlist. Continue?</string>
+    <string name="clear_cache_done">Cleaned up %1$d files</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribing">Subscribing…</string>
+    <string name="episodes_downloading">Started downloading %1$d episodes</string>
+    <string name="add_audio">Add audio</string>
+    <string name="add_from_podcast">Add from podcast</string>
+    <string name="no_downloaded_episodes">This podcast has no downloaded episodes yet</string>
+    <string name="podcast_file_missing">The selected audio file no longer exists; please download it again</string>
+    <string name="unnamed_audio">Unnamed audio</string>
+    <string name="import_audio">Import audio</string>
+    <string name="generate_subtitle">Generate subtitle</string>
+    <string name="generating_subtitle">Generating subtitle…</string>
+    <string name="subtitle_ready">Subtitle generated</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="sleep_timer_off">Timer off</string>
+    <string name="sleep_timer_preset_title">Timer duration</string>
+    <string name="sleep_timer_remaining">Sleep timer · %1$s left</string>
+    <string name="minutes_15">15 min</string>
+    <string name="minutes_30">30 min</string>
+    <string name="minutes_45">45 min</string>
+    <string name="minutes_60">60 min</string>
+    <string name="minutes_90">90 min</string>
+    <string name="minutes_120">120 min</string>
+    <string name="previous_track">Previous</string>
+    <string name="next_track">Next</string>
+    <string name="play_pause">Play / Pause</string>
+    <string name="custom">Custom</string>
+    <string name="minutes">min</string>
+    <string name="track_position">%1$d / %2$d</string>
+    <string name="shuffle_on">Shuffle on</string>
+    <string name="shuffle_off">Shuffle off</string>
+    <string name="single_loop">Repeat one</string>
+    <string name="list_loop">Repeat all</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="no_audio">No audio yet</string>
+    <string name="no_playlist">No playlists yet</string>
+    <string name="confirm">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="confirm_delete">Delete this?</string>
+    <string name="storage_permission_required">Storage permission is required to access audio files</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="subtitle_not_generated">No subtitle</string>
+    <string name="subtitle_queued">Queued</string>
+    <string name="subtitle_failed">Subtitle generation failed</string>
+    <string name="subtitle_failed_with_reason">Subtitle generation failed: %1$s</string>
+    <string name="sleep_timer_set">Sleep timer set</string>
+    <string name="sleep_timer_finished">Sleep timer ended</string>
+    <string name="now_playing">Now playing</string>
+
+    <!-- Subtitle generation progress and remaining time -->
+    <string name="subtitle_generating">Generating %1$d%%</string>
+    <string name="subtitle_generating_with_eta">Generating %1$d%% · ~%2$s remaining</string>
+
+    <!-- Whisper model settings -->
+    <string name="menu_whisper_model">Model settings</string>
+    <string name="whisper_model_dialog_title">Subtitle recognition model</string>
+    <string name="whisper_model_language">Recognition language</string>
+    <string name="whisper_model_download">Download</string>
+    <string name="whisper_model_downloaded">Downloaded</string>
+    <string name="whisper_model_not_downloaded_status">Not downloaded</string>
+    <string name="whisper_model_size">Size ~ %1$s</string>
+    <string name="whisper_model_delete_confirm">Delete \"%1$s\"?</string>
+    <string name="whisper_model_metered_confirm">You are on a metered network (mobile data or paid Wi-Fi).\n\nDownload \"%1$s\" (~%2$s)?</string>
+    <string name="whisper_model_no_network">No network available; cannot download the model.</string>
+    <string name="whisper_model_force_baseline">Compatibility mode</string>
+    <string name="whisper_model_word_timestamps">Word-level timestamps</string>
+    <string name="whisper_model_downloading">Downloading model… %1$d%%</string>
+    <string name="whisper_model_download_failed">Model download failed: %1$s</string>
+    <string name="whisper_model_download_ok">Model downloaded</string>
+    <string name="whisper_model_pick_in_language">Please select a \"%1$s\" model first</string>
+
+    <!-- Cancel ongoing subtitle generation -->
+    <string name="cancel_subtitle">Cancel generation</string>
+    <string name="cancel_subtitle_confirm">Cancel subtitle generation for this audio?</string>
+
+    <!-- Audio list: multi-select and batch operations -->
+    <string name="select_audio">Select</string>
+    <string name="sort">Sort</string>
+    <string name="sort_playlist_by_title">Sort by title</string>
+    <string name="selected_count">%1$d selected</string>
+    <string name="batch_generate_subtitle">Generate subtitle</string>
+    <string name="batch_delete">Delete</string>
+    <string name="batch_delete_confirm">Delete the %1$d selected audios? This cannot be undone.</string>
+    <string name="batch_nothing_to_generate">All selected audios already have (or are generating) subtitles; no need to start again</string>
+
+    <!-- Audio list: import methods -->
+    <string name="import_audio_file">Select audio files</string>
+    <string name="import_audio_folder">Import entire folder</string>
+    <string name="import_folder_empty">No audio files found in this folder</string>
+    <string name="import_scanning">Scanning folder…</string>
+    <string name="import_progress_count">Importing %1$d / %2$d</string>
+    <string name="import_done_count">Imported %1$d audios</string>
+    <string name="subtitle_cancelled">Subtitle generation cancelled</string>
+    <string name="subtitle_cancelling">Cancelling…</string>
+
+    <!-- New: user-visible hardcoded strings extracted during internationalization -->
+    <string name="notif_channel_playback">Playback</string>
+    <string name="notif_channel_playback_desc">Music playback notification</string>
+    <string name="notif_paused">Paused</string>
+    <string name="notif_action_play">Play</string>
+    <string name="notif_action_pause">Pause</string>
+    <string name="err_podcast_save_failed">Failed to save podcast</string>
+    <string name="err_podcast_not_found">Podcast does not exist</string>
+    <string name="err_podcastindex_creds">Missing Podcast Index credentials; configure podcastIndex.apiKey / apiSecret in local.properties</string>
+    <string name="err_search_failed">Search failed</string>
+    <string name="err_model_no_download">Model %1$s cannot be downloaded; use the built-in version</string>
+    <string name="err_storage_insufficient">Insufficient storage: need %1$s, available %2$s</string>
+    <string name="err_download_http">Download failed: HTTP %1$s (final URL %2$s)</string>
+    <string name="err_download_not_model">Download failed: server returned a non-model file (Content-Type=%1$s). This usually means the download was redirected or the network is blocked; check your connection and retry.</string>
+    <string name="err_download_empty">Download failed: server returned an empty file</string>
+    <string name="err_download_cancelled">Download cancelled</string>
+    <string name="err_download_partial">Download failed: only %1$s bytes (%2$s) received, not a valid model file. The network may be blocked or the download redirected.</string>
+    <string name="err_download_incomplete">Download incomplete: received %1$s, expected %2$s. Please retry.</string>
+    <string name="err_download_write">Download failed: cannot write %1$s</string>
+    <string name="err_download_redirect">Download failed: too many redirects (final %1$s)</string>
+    <string name="err_download_no_connection">Download failed: cannot establish connection</string>
+    <string name="err_file_write_failed">File write failed</string>
+    <string name="err_http">HTTP %1$s</string>
+    <string name="dialog_delete_audio_title">Delete audio</string>
+    <string name="dialog_delete_audio_msg">Delete \"%1$s\"?</string>
+    <string name="err_audio_missing">Audio does not exist or was deleted; skipping subtitle generation</string>
+    <string name="empty_add_audio_hint">Tap the button at bottom-right to add audio</string>
+</resources>

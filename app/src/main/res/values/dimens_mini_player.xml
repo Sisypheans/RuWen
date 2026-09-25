@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 底部迷你播放栏高度。
+         引用点：mini_player.xml 根布局 + 两个列表页 <include> 的 layout_height。
+         注意 <include> 上的 layout_height 会覆盖被包含布局根 View 的值，
+         所以两边都必须是 @dimen/mini_player_height，不能写 wrap_content。
+
+         70 → 80dp：与底部导航（Material 默认 80dp）互换高度——
+         迷你栏变 80dp、导航显式改 70dp（见 activity_main.xml）。 -->
+    <dimen name="mini_player_height">80dp</dimen>
+</resources>

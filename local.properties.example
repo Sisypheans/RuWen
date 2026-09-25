@@ -1,0 +1,18 @@
+# Template for local.properties.
+#
+# Copy this file to "local.properties" in the project root and fill in your own
+# values. The real local.properties is git-ignored, so credentials never enter
+# version control.
+#
+# Note: do NOT add sdk.dir yourself — Android Studio generates that line
+# automatically when the project is opened.
+#
+# All keys below are OPTIONAL. Without them the app builds and runs fine;
+# only the Podcast Index search source becomes unavailable at runtime
+# (Apple Podcasts search and OPML import are unaffected).
+
+# ── Podcast Index API credentials ──────────────────────────────
+# Sign up for a free key at: https://api.podcastindex.org/signup
+# These are injected into BuildConfig at build time (see app/build.gradle.kts).
+podcastIndex.apiKey=YOUR_KEY
+podcastIndex.apiSecret=YOUR_SECRET

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    音频列表条目的背景：把「点击水波纹」与「正在播放的选中底色」合成同一个 RippleDrawable。
+
+    为什么要合并：一个 View 只能有一个 background。之前根布局直接用的是
+    ?attr/selectableItemBackground（只有水波纹），于是没法再叠加「正在播放」的选中底色，
+    两者必须合在一起。
+
+      · ripple 颜色 = ?attr/colorControlHighlight
+        → Material 标准水波纹：从手指落点向外扩散、随后淡出（即常见的「阴影从中间扩散再消失」）。
+      · state_activated = true → 铺一层 ?attr/colorSecondaryContainer 作为选中底色。
+
+    是否处于选中态由 AudioItemAdapter 通过 itemView.isActivated 控制。
+-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
+    <item>
+        <selector>
+            <item android:state_activated="true">
+                <color android:color="?attr/colorSecondaryContainer" />
+            </item>
+            <item>
+                <color android:color="@android:color/transparent" />
+            </item>
+        </selector>
+    </item>
+</ripple>

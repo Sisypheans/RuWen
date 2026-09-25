@@ -1,0 +1,11 @@
+<!-- Material Symbols: download。实际着色由 MaterialButton 的 iconTint 控制，
+     fillColor 用黑色兜底，避免 tint 未生效时图标不可见。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M5,20h14v-2H5V20zM19,9h-4V3H9v6H5l7,7 7,-7z" />
+</vector>

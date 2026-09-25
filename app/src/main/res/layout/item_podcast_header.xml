@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 播客详情页的头部（参照 AntennaPod 的 feeditemlist_header）：
+     它作为**列表的第一项**（ConcatAdapter 的 header），随单集列表一起滚动，不固定。
+     左边大封面（124dp），右边是标题 + 作者 + 四个操作按钮（详情/排序/刷新/取消订阅），
+     按钮排在标题下方、位于封面右侧——与 AntennaPod 一致的布局关系。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        app:cardBackgroundColor="@color/surface_variant"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+
+        <ImageView
+            android:id="@+id/ivCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_playlist_empty"
+            android:contentDescription="@null" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="124dp"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <!-- 四个操作按钮：排在标题下方（AntennaPod 的 buttonContainer 语义） -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnDetail"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/podcast_detail"
+                android:padding="12dp"
+                android:src="@drawable/ic_info"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnSort"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/podcast_sort"
+                android:padding="12dp"
+                android:src="@drawable/ic_sort"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/podcast_refresh"
+                android:padding="12dp"
+                android:src="@drawable/ic_refresh"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnUnsubscribe"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/podcast_unsubscribe"
+                android:padding="12dp"
+                android:src="@drawable/ic_unsubscribe"
+                app:tint="@color/text_primary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

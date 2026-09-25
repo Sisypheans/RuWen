@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  播放页（PlayerActivity）专用字符串。
+  与 res/values/strings.xml 分开，避免与同时改 strings.xml 的同事产生并发编辑冲突。
+  list_loop / single_loop 已在 strings.xml 中定义，这里只补充播放页新增的字符串。
+-->
+<resources>
+    <!-- 循环模式：不循环 -->
+    <string name="repeat_off">不循环</string>
+
+    <!-- 字幕区左右滑动到边界时的提示 -->
+    <string name="subtitle_no_previous">已经是第一段了</string>
+    <string name="subtitle_no_next">已经是最后一段了</string>
+</resources>

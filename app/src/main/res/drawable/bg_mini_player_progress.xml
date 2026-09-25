@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 迷你播放栏底部的 4dp 进度条（下方紧接底部导航时，兼作两者之间的分隔线）。
+     未播放部分是明确可见的灰轨道（progress_track），已播放部分是主题紫。
+
+     注意：不要在布局上再设 progressTint，它会覆盖本 drawable 里 progress 的颜色。 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/progress_track" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/purple_primary" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>
