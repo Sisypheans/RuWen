@@ -3,6 +3,7 @@ local.properties
 
 # Gradle / build outputs
 .gradle/
+.kotlin/
 build/
 app/build/
 captures/
