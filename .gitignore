@@ -1,6 +1,10 @@
 # Local configuration (SDK path & API credentials — never commit)
 local.properties
 
+# Release signing (never commit — losing the keystore = users can't upgrade)
+keystore.properties
+*.keystore
+
 # Gradle / build outputs
 .gradle/
 .kotlin/

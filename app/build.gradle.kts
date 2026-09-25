@@ -33,6 +33,16 @@ if (localProperties.getProperty("podcastIndex.apiKey").isNullOrBlank() ||
     )
 }
 
+// Release signing: read from keystore.properties in the repo root (git-ignored).
+// The keystore file itself is local-only too — back both up, losing them means
+// existing users can never upgrade without uninstalling. If keystore.properties
+// is absent (e.g. a fresh clone), the release build simply falls back to unsigned.
+val keystoreProperties =
+    Properties().apply {
+        val f = rootProject.file("keystore.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+
 // Version numbers are maintained here: versionName also feeds the APK file name
 // (see the archivesName setting at the bottom of this file), so every delivered
 // APK is self-identifying instead of a pile of identical app-debug.apk files.
@@ -100,6 +110,17 @@ android {
         }
     }
 
+    signingConfigs {
+        if (keystoreProperties.isNotEmpty()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -107,6 +128,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Sign only when credentials are available; otherwise produce an
+            // "-unsigned" APK (a fresh clone without keystore.properties can still build).
+            if (keystoreProperties.isNotEmpty()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
