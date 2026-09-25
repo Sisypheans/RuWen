@@ -26,7 +26,7 @@ and runs speech-to-text **entirely on the device** — no network, no uploads of
 
 ## Screenshots
 
-| Playlists | Podcasts | Model settings | Search |
+| Playlists | Model settings | Podcasts | Search |
 | --- | --- | --- | --- |
 | <img src="docs/screenshots/0.jpg" width="240"/> | <img src="docs/screenshots/1.jpg" width="240"/> | <img src="docs/screenshots/2.jpg" width="240"/> | <img src="docs/screenshots/3.jpg" width="240"/> |
 

@@ -20,7 +20,7 @@ RuWen 是一款基于 Material Design 的安卓音频播放器，把 **播客订
 
 ## 截图预览
 
-| 播放列表 | 播客 | 字幕模型 | 搜索 |
+| 播放列表 | 字幕模型 | 播客 | 搜索 |
 | --- | --- | --- | --- |
 | <img src="docs/screenshots/0.jpg" width="240"/> | <img src="docs/screenshots/1.jpg" width="240"/> | <img src="docs/screenshots/2.jpg" width="240"/> | <img src="docs/screenshots/3.jpg" width="240"/> |
 

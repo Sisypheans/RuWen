@@ -36,7 +36,7 @@ if (localProperties.getProperty("podcastIndex.apiKey").isNullOrBlank() ||
 // Version numbers are maintained here: versionName also feeds the APK file name
 // (see the archivesName setting at the bottom of this file), so every delivered
 // APK is self-identifying instead of a pile of identical app-debug.apk files.
-val appVersionName = "1.1.15"
+val appVersionName = "1.1.16"
 
 android {
     namespace = "com.ruwen.audioplayer"
@@ -46,7 +46,7 @@ android {
         applicationId = "com.ruwen.audioplayer"
         minSdk = 29
         targetSdk = 34
-        versionCode = 17
+        versionCode = 18
         versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
