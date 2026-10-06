@@ -237,7 +237,7 @@
 
         </LinearLayout>
 
-        <!-- 控制按钮：随机 / 上一首 / 播放 / 下一首 / 循环（行业通用五键布局） -->
+        <!-- 控制按钮：倍速 / 上一首 / 播放 / 下一首 / 循环（行业通用五键布局） -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -245,14 +245,22 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btnShuffle"
-                android:layout_width="48dp"
+            <!-- 倍速按钮：直接显示当前倍速（如 1.0× / 1.5×），非 1.0× 时用品牌紫高亮。
+                 点击弹出底部抽屉选档位（五档属于「需要看清全部可选项」的设置，M3 推荐用抽屉）。
+                 用 TextView 而非 ImageButton：按钮上要显示文字，且需要 48dp 触控区。 -->
+            <TextView
+                android:id="@+id/btnSpeed"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:minWidth="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/shuffle"
-                android:src="@drawable/ic_shuffle"
-                app:tint="@color/text_secondary" />
+                android:contentDescription="@string/playback_speed"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/playback_speed_default"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btnPrevious"

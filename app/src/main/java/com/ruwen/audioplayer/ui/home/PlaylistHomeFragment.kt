@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +19,8 @@ import com.ruwen.audioplayer.R
 import com.ruwen.audioplayer.data.entity.Playlist
 import com.ruwen.audioplayer.databinding.FragmentPlaylistHomeBinding
 import com.ruwen.audioplayer.ui.adapter.PlaylistAdapter
+import com.ruwen.audioplayer.ui.menu.MenuOption
+import com.ruwen.audioplayer.ui.menu.RuwenMenu
 import com.ruwen.audioplayer.ui.playlist.PlaylistDetailActivity
 import com.ruwen.audioplayer.ui.viewmodel.MainViewModel
 
@@ -135,23 +135,19 @@ class PlaylistHomeFragment : Fragment() {
     }
 
     private fun showPlaylistMenu(playlist: Playlist, anchor: View) {
-        val popup = PopupMenu(requireContext(), anchor, Gravity.END)
-        popup.setForceShowIcon(true)
-        popup.menuInflater.inflate(R.menu.playlist_menu, popup.menu)
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_rename -> {
-                    showRenameDialog(playlist)
-                    true
-                }
-                R.id.action_delete -> {
-                    showDeleteDialog(playlist)
-                    true
-                }
-                else -> false
+        RuwenMenu.show(
+            context = requireContext(),
+            anchor = anchor,
+            options = listOf(
+                MenuOption(OPTION_RENAME, getString(R.string.rename), R.drawable.ic_edit),
+                MenuOption(OPTION_DELETE, getString(R.string.delete), R.drawable.ic_delete)
+            )
+        ) { option ->
+            when (option.id) {
+                OPTION_RENAME -> showRenameDialog(playlist)
+                OPTION_DELETE -> showDeleteDialog(playlist)
             }
         }
-        popup.show()
     }
 
     /**
@@ -225,5 +221,11 @@ class PlaylistHomeFragment : Fragment() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    companion object {
+        /** 播放列表条目菜单的选项 id（仅在本类内使用，故不用 R.id） */
+        private const val OPTION_RENAME = 1
+        private const val OPTION_DELETE = 2
     }
 }

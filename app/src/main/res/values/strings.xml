@@ -104,6 +104,7 @@
     <string name="eta_hours_minutes">%1$d h %2$d min</string>
     <string name="error_unknown">Unknown error</string>
     <string name="menu_settings">Settings</string>
+    <string name="more">More</string>
     <string name="menu_clear_cache">Clear cache</string>
     <string name="clear_cache_confirm">This will delete orphan files (covers, subtitles, etc.) no longer referenced by any audio or playlist. Continue?</string>
     <string name="clear_cache_done">Cleaned up %1$d files</string>
@@ -139,7 +140,10 @@
     <string name="shuffle_off">Shuffle off</string>
     <string name="single_loop">Repeat one</string>
     <string name="list_loop">Repeat all</string>
-    <string name="shuffle">Shuffle</string>
+    <!-- 播放倍速按钮的无障碍描述 -->
+    <string name="playback_speed">Playback speed</string>
+    <!-- 倍速按钮的默认文案（"1.0×" 无语言差异，故只在此处定义，其它语言自动回退） -->
+    <string name="playback_speed_default">1.0×</string>
     <string name="no_audio">No audio yet</string>
     <string name="no_playlist">No playlists yet</string>
     <string name="confirm">OK</string>

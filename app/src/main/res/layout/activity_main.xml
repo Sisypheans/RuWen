@@ -25,8 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/purple_primary"
-            app:titleTextColor="@color/text_on_primary"
-            app:popupTheme="@style/ThemeOverlay.RuWen.PopupMenu" />
+            app:titleTextColor="@color/text_on_primary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

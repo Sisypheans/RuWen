@@ -103,6 +103,7 @@
     <string name="eta_hours_minutes">%1$d 小時 %2$d 分鐘</string>
     <string name="error_unknown">未知錯誤</string>
     <string name="menu_settings">設置</string>
+    <string name="more">更多</string>
     <string name="menu_clear_cache">清除緩存</string>
     <string name="clear_cache_confirm">將刪除不再被任何音頻或播放列表引用的封面、字幕等孤兒文件，確定繼續？</string>
     <string name="clear_cache_done">已清理 %1$d 個文件</string>
@@ -138,7 +139,7 @@
     <string name="shuffle_off">隨機播放已關閉</string>
     <string name="single_loop">單曲循環</string>
     <string name="list_loop">列表循環</string>
-    <string name="shuffle">隨機播放</string>
+    <string name="playback_speed">播放倍速</string>
     <string name="no_audio">暫無音頻</string>
     <string name="no_playlist">暫無播放列表</string>
     <string name="confirm">確定</string>

@@ -93,6 +93,7 @@
     <string name="eta_hours_minutes">%1$d घं %2$d मिन</string>
     <string name="error_unknown">अज्ञात त्रुटि</string>
     <string name="menu_settings">सेटिंग्स</string>
+    <string name="more">और</string>
     <string name="menu_clear_cache">कैश साफ़ करें</string>
     <string name="clear_cache_confirm">इससे अनाथ फ़ाइलें (कवर, सबटाइटल आदि) हट जाएँगी जिन्हें कोई ऑडियो या प्लेलिस्ट अब संदर्भित नहीं करता। जारी रखें?</string>
     <string name="clear_cache_done">%1$d फ़ाइलें साफ़ कीं</string>
@@ -128,7 +129,7 @@
     <string name="shuffle_off">शफ़ल बंद</string>
     <string name="single_loop">एक दोहराएँ</string>
     <string name="list_loop">सभी दोहराएँ</string>
-    <string name="shuffle">शफ़ल</string>
+    <string name="playback_speed">प्लेबैक गति</string>
     <string name="no_audio">फिलहाल कोई ऑडियो नहीं</string>
     <string name="no_playlist">फिलहाल कोई प्लेलिस्ट नहीं</string>
     <string name="confirm">ठीक है</string>

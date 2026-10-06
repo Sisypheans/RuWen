@@ -93,6 +93,7 @@
     <string name="eta_hours_minutes">%1$d h %2$d min</string>
     <string name="error_unknown">Erreur inconnue</string>
     <string name="menu_settings">Paramètres</string>
+    <string name="more">Plus</string>
     <string name="menu_clear_cache">Vider le cache</string>
     <string name="clear_cache_confirm">Cela supprimera les fichiers orphelins (pochettes, sous-titres, etc.) non référencés par un audio ou une playlist. Continuer ?</string>
     <string name="clear_cache_done">%1$d fichiers nettoyés</string>
@@ -128,7 +129,7 @@
     <string name="shuffle_off">Aléatoire désactivé</string>
     <string name="single_loop">Répéter un</string>
     <string name="list_loop">Répéter tout</string>
-    <string name="shuffle">Aléatoire</string>
+    <string name="playback_speed">Vitesse de lecture</string>
     <string name="no_audio">Aucun audio pour le moment</string>
     <string name="no_playlist">Aucune playlist pour le moment</string>
     <string name="confirm">OK</string>

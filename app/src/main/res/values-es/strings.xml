@@ -93,6 +93,7 @@
     <string name="eta_hours_minutes">%1$d h %2$d min</string>
     <string name="error_unknown">Error desconocido</string>
     <string name="menu_settings">Ajustes</string>
+    <string name="more">Más</string>
     <string name="menu_clear_cache">Borrar caché</string>
     <string name="clear_cache_confirm">Esto eliminará archivos huérfanos (portadas, subtítulos, etc.) que ya no referencia ningún audio o lista. ¿Continuar?</string>
     <string name="clear_cache_done">Se eliminaron %1$d archivos</string>
@@ -128,7 +129,7 @@
     <string name="shuffle_off">Aleatorio desactivado</string>
     <string name="single_loop">Repetir uno</string>
     <string name="list_loop">Repetir todo</string>
-    <string name="shuffle">Aleatorio</string>
+    <string name="playback_speed">Velocidad de reproducción</string>
     <string name="no_audio">Aún no hay audio</string>
     <string name="no_playlist">Aún no hay listas</string>
     <string name="confirm">Aceptar</string>

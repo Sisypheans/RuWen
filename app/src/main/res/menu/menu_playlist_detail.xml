@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 音频列表页（播放列表详情）的工具栏菜单：以「三点」溢出菜单呈现。
+<!-- 音频列表页（播放列表详情）的工具栏菜单：只放一个「三点」按钮，
+     点击后用 RuwenMenu 弹出「选择 / 排序」两项。
 
-     两项都用 showAsAction="never"： toolbar 上没有任何 always 项时，
-     MaterialToolbar 才会显示三点溢出图标（早先是 showAsAction="always" 的
-     「全选」图标，直接常驻在工具栏右侧）。
-
-     两个入口语义固定，不再做状态循环：
-       - 选择：进入多选并全选，底部功能栏随之出现（功能栏自带「全选 / 取消」）
-       - 排序：按音频标题正序 / 倒序，结果写回播放顺序 -->
+     为什么不再用系统溢出菜单（showAsAction="never"）：
+     系统溢出菜单的图标只能渲染在**左侧**，与全项目「图标右置」的菜单风格不一致；
+     改成普通 action 按钮后由 RuwenMenu 统一渲染，风格与首页 / 主页面菜单完全一致。
+     （toolbar 上有 always 项时系统才不显示溢出三点，这里正好用 always 接管。） -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_select"
-        android:title="@string/select_audio"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_sort"
-        android:title="@string/sort"
-        app:showAsAction="never" />
+        android:id="@+id/action_more"
+        android:icon="@drawable/ic_more_vert"
+        android:title="@string/more"
+        app:showAsAction="always" />
 
 </menu>

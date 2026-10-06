@@ -11,13 +11,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.text.Layout
+import android.text.StaticLayout
+import android.util.TypedValue
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import coil3.load
@@ -33,7 +39,9 @@ import com.ruwen.audioplayer.data.entity.SubtitleCue
 import com.ruwen.audioplayer.data.entity.SubtitleStatus
 import com.ruwen.audioplayer.data.repository.PlaylistRepository
 import com.ruwen.audioplayer.databinding.ActivityPlayerBinding
+import com.ruwen.audioplayer.databinding.DialogPlaybackSpeedBinding
 import com.ruwen.audioplayer.databinding.DialogSleepTimerBinding
+import com.ruwen.audioplayer.databinding.ItemSpeedOptionBinding
 import com.ruwen.audioplayer.service.PlaybackService
 import com.ruwen.audioplayer.service.PlaybackBinder
 import com.ruwen.audioplayer.util.SubtitleUtils
@@ -247,12 +255,8 @@ class PlayerActivity : AppCompatActivity() {
             updateRepeatModeIcon()
         }
 
-        // 随机：独立开关
-        binding.btnShuffle.setOnClickListener {
-            val service = playbackService ?: return@setOnClickListener
-            service.setShuffleEnabled(!service.isShuffleEnabled())
-            updateShuffleIcon()
-        }
+        // 倍速：点击弹出底部抽屉选档位（0.5 / 0.75 / 1 / 1.25 / 1.5）
+        binding.btnSpeed.setOnClickListener { showSpeedSheet() }
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -546,7 +550,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         updateRepeatModeIcon()
-        updateShuffleIcon()
+        updateSpeedButton()
         // 切歌/播放状态变化后立刻同步一次进度条与时间（不再等下一个 500ms 轮询），
         // 否则“当前位置/总长度”会在切歌后短暂停留在上一首的数值。
         updateProgress()
@@ -689,17 +693,127 @@ class PlayerActivity : AppCompatActivity() {
         renderSubtitle(prev, current, next)
     }
 
-    /** 渲染三行字幕：当前句高亮（主色 + 加粗），上/下句用次要色小一号 */
+    /**
+     * 渲染三行字幕：当前句高亮（主色 + 加粗），上/下句用次要色小一号。
+     *
+     * **自适应规则（用户 2026-10-06 拍板：字幕不该被省略）**——优先级：当前句 > 上下文句：
+     *  1. 常规情况（当前句 ≤ 3 行、且三行总高放得下）→ 上一句 / 当前句 / 下一句照旧；
+     *  2. 当前句放不下（超 3 行，或三行总高超过卡片可用高度）→ **隐藏上下句**，
+     *     整张卡片的空间都让给当前句，当前句仍保持居中；
+     *  3. 让出全部空间后还放不下 → 当前句字号从 20sp 逐级降到 13sp，直到完整显示。
+     *
+     * 为什么用 StaticLayout **预**测量而不是「先渲染再看 lineCount 改」：后者会让上下句
+     * 先出现一帧再消失，肉眼能看到闪烁；预测量可以在写文本之前就把结论定下来。
+     *
+     * 为什么降字号而不是滚动：字幕区上下滑已被「重听当前段 / 播放暂停」占用，
+     * 再塞一个滚动手势会互相打架。
+     */
     private fun renderSubtitle(prev: SubtitleCue?, current: SubtitleCue?, next: SubtitleCue?) {
+        val tvCurrent = binding.tvSubtitle
+        val tvPrev = binding.tvSubtitlePrev
+        val tvNext = binding.tvSubtitleNext
+
+        val width = tvCurrent.width
+        val available = binding.subtitleScrollView.height -
+            binding.subtitleScrollView.paddingTop -
+            binding.subtitleScrollView.paddingBottom
+        // 视图还没布局（首次进入 / 刚切歌）时拿不到真实尺寸：
+        // 先按固定上限渲染一次，布局完成后再按真实尺寸重算，避免首帧空白。
+        // 注意：只对「还没布局的那个 View」注册 doOnLayout——已经布局好的 View 会同步回调，
+        // 再走一遍这条分支就是无限递归。
+        if (width <= 0) {
+            tvCurrent.doOnLayout { renderSubtitle(prev, current, next) }
+            renderSubtitleFixed(prev, current, next)
+            return
+        }
+        if (available <= 0) {
+            binding.subtitleScrollView.doOnLayout { renderSubtitle(prev, current, next) }
+            renderSubtitleFixed(prev, current, next)
+            return
+        }
+
+        val currentText = current?.text.orEmpty()
+        val prevText = prev?.text.orEmpty()
+        val nextText = next?.text.orEmpty()
+
+        // 每次渲染都从「默认字号」开始，避免上一次长句降下来的字号残留
+        tvCurrent.setTextSize(TypedValue.COMPLEX_UNIT_SP, SUBTITLE_SIZE_SP)
+
+        val currentLines = measureLineCount(currentText, tvCurrent, width)
+        val prevLines = measureLineCount(prevText, tvPrev, width).coerceAtMost(CONTEXT_MAX_LINES)
+        val nextLines = measureLineCount(nextText, tvNext, width).coerceAtMost(CONTEXT_MAX_LINES)
+        val needed = currentLines * tvCurrent.lineHeight +
+            prevLines * tvPrev.lineHeight +
+            nextLines * tvNext.lineHeight
+
+        if (currentLines <= CURRENT_MAX_LINES && needed <= available) {
+            tvPrev.isVisible = true
+            tvNext.isVisible = true
+            tvPrev.maxLines = CONTEXT_MAX_LINES
+            tvNext.maxLines = CONTEXT_MAX_LINES
+            tvPrev.text = prevText
+            tvNext.text = nextText
+            tvCurrent.maxLines = CURRENT_MAX_LINES
+            tvCurrent.text = currentText
+            return
+        }
+
+        // 当前句放不下：上下文行让位，整卡高度都给当前句
+        tvPrev.isVisible = false
+        tvNext.isVisible = false
+        tvPrev.text = ""
+        tvNext.text = ""
+
+        var sizeSp = SUBTITLE_SIZE_SP
+        var lines = currentLines
+        var lineHeight = tvCurrent.lineHeight
+        while (lines * lineHeight > available && sizeSp > SUBTITLE_MIN_SIZE_SP) {
+            sizeSp -= 1f
+            tvCurrent.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp)
+            lines = measureLineCount(currentText, tvCurrent, width)
+            lineHeight = tvCurrent.lineHeight
+        }
+        // 13sp 仍装不下属于极端长句（按常见机型估算要 300 字以上才会触发）：
+        // 此时保留 XML 上的 ellipsize 作为最后防线，不无限缩小字号。
+        tvCurrent.maxLines = (available / lineHeight).coerceAtLeast(1)
+        tvCurrent.text = currentText
+    }
+
+    /** 固定上限渲染（三行 + 默认字号）：仅用于视图尚未布局、量不出尺寸时的兜底 */
+    private fun renderSubtitleFixed(prev: SubtitleCue?, current: SubtitleCue?, next: SubtitleCue?) {
+        binding.tvSubtitlePrev.isVisible = true
+        binding.tvSubtitleNext.isVisible = true
+        binding.tvSubtitlePrev.maxLines = CONTEXT_MAX_LINES
+        binding.tvSubtitleNext.maxLines = CONTEXT_MAX_LINES
         binding.tvSubtitlePrev.text = prev?.text.orEmpty()
         binding.tvSubtitleNext.text = next?.text.orEmpty()
+        // 复位字号：上一次若是被降过字号的长句，兜底路径也要回到默认字号
+        binding.tvSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, SUBTITLE_SIZE_SP)
+        binding.tvSubtitle.maxLines = CURRENT_MAX_LINES
         binding.tvSubtitle.text = current?.text.orEmpty()
+    }
+
+    /** 预测量 [text] 在 [width] 内会占几行（用目标 TextView 的画笔，不改视图状态） */
+    private fun measureLineCount(text: CharSequence, textView: TextView, width: Int): Int {
+        if (text.isBlank() || width <= 0) return 0
+        return StaticLayout.Builder
+            .obtain(text, 0, text.length, textView.paint, width)
+            .setAlignment(Layout.Alignment.ALIGN_CENTER)
+            .setLineSpacing(textView.lineSpacingExtra, textView.lineSpacingMultiplier)
+            .setIncludePad(false)
+            .build()
+            .lineCount
     }
 
     /** 无字幕 / 生成中 / 失败等提示文案：写在中间那行，上下两行清空 */
     private fun renderSubtitleMessage(message: String) {
         binding.tvSubtitlePrev.text = ""
         binding.tvSubtitleNext.text = ""
+        binding.tvSubtitlePrev.isVisible = false
+        binding.tvSubtitleNext.isVisible = false
+        // 复位：上一次若是被降过字号的长句，提示文案要回到默认字号
+        binding.tvSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, SUBTITLE_SIZE_SP)
+        binding.tvSubtitle.maxLines = CURRENT_MAX_LINES
         binding.tvSubtitle.text = message
     }
 
@@ -732,17 +846,66 @@ class PlayerActivity : AppCompatActivity() {
         binding.btnRepeat.contentDescription = getString(descRes)
     }
 
-    private fun updateShuffleIcon() {
-        val active = playbackService?.isShuffleEnabled() == true
-        binding.btnShuffle.imageTintList = ColorStateList.valueOf(
+    /**
+     * 倍速按钮：显示当前倍速，非 1.0× 时用品牌紫高亮（1.0× 是常态，高亮它会喧宾夺主）。
+     * 服务未绑定时显示默认 1.0×：此时点开菜单也拿不到服务，直接不弹。
+     */
+    private fun updateSpeedButton() {
+        val speed = playbackService?.getPlaybackSpeed() ?: PlaybackService.DEFAULT_PLAYBACK_SPEED
+        binding.btnSpeed.text = formatSpeed(speed)
+        binding.btnSpeed.setTextColor(
             ContextCompat.getColor(
                 this,
-                if (active) R.color.purple_primary else R.color.text_secondary
+                if (speed != PlaybackService.DEFAULT_PLAYBACK_SPEED) R.color.purple_primary
+                else R.color.text_secondary
             )
         )
-        binding.btnShuffle.alpha = if (active) 1.0f else 0.6f
-        binding.btnShuffle.contentDescription = getString(R.string.shuffle)
+        binding.btnSpeed.contentDescription =
+            getString(R.string.playback_speed) + " " + formatSpeed(speed)
     }
+
+    /**
+     * 播放倍速：底部抽屉（Pocket Casts / YouTube 风格的 Playback effects 面板）。
+     *
+     * 为什么不用下拉菜单：五档倍速属于「需要看清全部可选项、且会频繁调整」的设置，
+     * Material 3 对这类场景推荐底部抽屉（菜单更适合少量、一次性的动作）。
+     * 另外底部抽屉位于拇指区，单手更好操作。
+     *
+     * 选中态用右侧主题紫对勾表示（M3 列表选中态），不用原生单选圆圈。
+     */
+    private fun showSpeedSheet() {
+        val service = playbackService ?: return
+        val current = service.getPlaybackSpeed()
+        val sheet = BottomSheetDialog(this)
+        val sheetBinding = DialogPlaybackSpeedBinding.inflate(layoutInflater)
+        val inflater = layoutInflater
+
+        PlaybackService.SPEED_PRESETS.forEach { speed ->
+            val row = ItemSpeedOptionBinding.inflate(inflater, sheetBinding.optionsContainer, false)
+            row.tvOptionLabel.text = formatSpeed(speed)
+            row.ivOptionCheck.isVisible = speed == current
+            row.optionRow.setOnClickListener {
+                service.setPlaybackSpeed(speed)
+                updateSpeedButton()
+                sheet.dismiss()
+            }
+            sheetBinding.optionsContainer.addView(row.root)
+        }
+
+        sheet.setContentView(sheetBinding.root)
+        sheet.show()
+    }
+
+    /**
+     * 倍速统一保留**至少一位小数**：1.0× / 0.5× / 0.75× / 1.25× / 1.5×。
+     *
+     * 为什么不再把 1.0 简写成「1×」：倍速是一组同档位的数值，写成「1×」会被误读成
+     * 「1 倍 = 原速」之外的某种档位，且与 0.5× / 1.5× 的小数写法不对齐。
+     * 模式 `0.0##`：至少 1 位小数（1.0），最多 3 位（0.75 / 1.25 不被四舍五入）。
+     */
+    private fun formatSpeed(speed: Float): String = speedFormat.format(speed) + "×"
+
+    private val speedFormat = java.text.DecimalFormat("0.0##")
 
     /**
      * 渲染播放/暂停按钮。animate=true 时做一个 100ms 缩放到 0.7 再回弹的微动效。
@@ -919,5 +1082,14 @@ class PlayerActivity : AppCompatActivity() {
         const val EXTRA_START_AUDIO_ID = "start_audio_id"
         /** 装载播放列表后是否立即播放，默认 true。迷你播放栏以「记忆态」进入时传 false。 */
         const val EXTRA_AUTO_PLAY = "auto_play"
+
+        /** 当前句字幕的默认字号（sp，与 activity_player.xml 的 textSize 一致） */
+        private const val SUBTITLE_SIZE_SP = 20f
+        /** 当前句缩字号的下限：再小就不适合做「跟读主字幕」了 */
+        private const val SUBTITLE_MIN_SIZE_SP = 13f
+        /** 上一句 / 下一句的行数上限（上下文行，按用户要求可省略、只保证当前句完整） */
+        private const val CONTEXT_MAX_LINES = 2
+        /** 常规情况下当前句的行数上限：超过这个数就说明「当前句放不下」 */
+        private const val CURRENT_MAX_LINES = 3
     }
 }

@@ -93,6 +93,7 @@
     <string name="eta_hours_minutes">%1$d ч %2$d мин</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="menu_settings">Настройки</string>
+    <string name="more">Ещё</string>
     <string name="menu_clear_cache">Очистить кэш</string>
     <string name="clear_cache_confirm">Это удалит осиротевшие файлы (обложки, субтитры и т. д.), на которые больше не ссылается ни один аудио или плейлист. Продолжить?</string>
     <string name="clear_cache_done">Очищено файлов: %1$d</string>
@@ -128,7 +129,7 @@
     <string name="shuffle_off">Перемешивание выключено</string>
     <string name="single_loop">Повторять один</string>
     <string name="list_loop">Повторять все</string>
-    <string name="shuffle">Перемешивание</string>
+    <string name="playback_speed">Скорость воспроизведения</string>
     <string name="no_audio">Аудио ещё нет</string>
     <string name="no_playlist">Плейлистов ещё нет</string>
     <string name="confirm">OK</string>

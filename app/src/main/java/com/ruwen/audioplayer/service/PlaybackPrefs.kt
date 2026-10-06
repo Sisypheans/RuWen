@@ -34,6 +34,21 @@ class PlaybackPrefs(context: Context) {
         prefs.edit().putString(KEY_REPEAT_MODE, mode.name).apply()
     }
 
+    /**
+     * 读取播放倍速（0.5 / 0.75 / 1 / 1.25 / 1.5）。
+     * 无记录或读到非法值（<= 0）时回退 1.0 —— 存储层做兜底，
+     * 避免历史脏数据把 ExoPlayer 设成 0 倍速（表现为音频静止不前进）。
+     */
+    fun getPlaybackSpeed(): Float {
+        val speed = prefs.getFloat(KEY_PLAYBACK_SPEED, PlaybackService.DEFAULT_PLAYBACK_SPEED)
+        return if (speed > 0f) speed else PlaybackService.DEFAULT_PLAYBACK_SPEED
+    }
+
+    /** 立即落盘播放倍速 */
+    fun savePlaybackSpeed(speed: Float) {
+        prefs.edit().putFloat(KEY_PLAYBACK_SPEED, speed).apply()
+    }
+
     /** 立即落盘「上次播放」快照（封面路径可空：音频没有封面时存 null，迷你栏回退默认图标） */
     fun saveLastPlayed(playlistId: Long, audioId: Long, index: Int, title: String, coverPath: String?) {
         prefs.edit()
@@ -72,6 +87,7 @@ class PlaybackPrefs(context: Context) {
     companion object {
         private const val PREFS_NAME = "ruwen_playback_settings"
         private const val KEY_REPEAT_MODE = "repeat_mode"
+        private const val KEY_PLAYBACK_SPEED = "playback_speed"
         private const val KEY_LAST_PLAYED_PLAYLIST_ID = "last_played_playlist_id"
         private const val KEY_LAST_PLAYED_AUDIO_ID = "last_played_audio_id"
         private const val KEY_LAST_PLAYED_INDEX = "last_played_index"

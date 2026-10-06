@@ -43,7 +43,7 @@ import com.ruwen.audioplayer.ui.player.PlayerActivity
  *    导致「点了播放但立刻被判为暂停」这类状态错乱。
  *  - 服务以 startService 方式常驻，Activity 退出后仍继续播放；
  *    Activity 重新进入时只「附着」到当前播放状态，不重新开始（见 [hasPlaylistLoaded]）。
- *  - 循环（repeat）与随机（shuffle）是两个彼此独立的开关，与主流播放器一致。
+ *  - 循环模式（repeat）与播放倍速（speed）是两个彼此独立的设置，均与主流播放器一致。
  *
  * TODO(架构演进)：Google 官方推荐形态是 MediaSessionService + MediaController
  * （https://developer.android.com/media/media3/session/background-playback），
@@ -63,15 +63,15 @@ class PlaybackService : Service() {
 
     /**
      * 最近一次被要求播放的「播放列表顺序」下标。
-     * 开启随机播放后 ExoPlayer 的 currentMediaItemIndex 表示的是随机后的顺序，
-     * 不能直接和播放列表下标比较，所以单独记录一份用于「重新进入是否要切歌」的判断。
+     * ExoPlayer 的 currentMediaItemIndex 表示的是**时间线**下标，未必等于播放列表下标，
+     * 所以单独记录一份用于「重新进入是否要切歌」的判断。
      */
     private var lastRequestedIndex: Int = 0
 
-    // 默认值（冷启动且 prefs 无记录时）为「不循环」(NONE)。
+    // 默认值（冷启动且 prefs 无记录时）为「不循环」(NONE)、「1 倍速」。
     // 服务创建时会先从 SharedPreferences 恢复用户上次设置的值（见 onCreate）。
     private var repeatMode: RepeatMode = RepeatMode.NONE
-    private var shuffleEnabled: Boolean = false
+    private var playbackSpeed: Float = DEFAULT_PLAYBACK_SPEED
     private var sleepTimerMode: SleepTimerMode = SleepTimerMode.NONE
 
     // NONE 循环模式下的「单曲播完即停」状态：
@@ -179,6 +179,8 @@ class PlaybackService : Service() {
         // 冷启动恢复：优先用用户上次设置的循环模式，读不到/非法才回退 NONE。
         // 必须早于 initializePlayer，否则 ExoPlayer 的初始 repeatMode 会和服务端不一致。
         repeatMode = PlaybackPrefs(this).getRepeatMode()
+        // 倍速同理：先恢复，initializePlayer 建好播放器后由 setPlaylist / 播放前统一下发
+        playbackSpeed = PlaybackPrefs(this).getPlaybackSpeed()
         initializePlayer()
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -282,7 +284,7 @@ class PlaybackService : Service() {
         naturalStop = false
 
         exoPlayer?.run {
-            // 用音频 id 作为 mediaId：随机播放打乱顺序后仍能反查回原始 AudioItem
+            // 用音频 id 作为 mediaId：队列顺序与数据库列表不一致时仍能反查回原始 AudioItem
             setMediaItems(items.map { item ->
                 MediaItem.Builder()
                     .setUri(item.filePath)
@@ -291,7 +293,9 @@ class PlaybackService : Service() {
                     .build()
             }, currentIndex, startPositionMs)
             repeatMode = toExoRepeatMode(this@PlaybackService.repeatMode)
-            shuffleModeEnabled = shuffleEnabled
+            // 倍速是 ExoPlayer 播放器级参数，装载新队列后必须重新下发一次，
+            // 否则换列表/重新装载会把速度重置回 1×。
+            setPlaybackSpeed(this@PlaybackService.playbackSpeed)
             prepare()
         }
         // 记住「上次播放」：装载即记当前曲目（index 已 clamp 到合法范围）
@@ -446,17 +450,24 @@ class PlaybackService : Service() {
     fun getRepeatMode(): RepeatMode = repeatMode
 
     /**
-     * 随机播放开关。
-     * 与循环模式互斥地独立维护：开启随机时不再改动循环模式，
-     * 关闭随机也绝不会把「单曲循环」偷偷改掉。
+     * 设置播放倍速（0.5 / 0.75 / 1 / 1.25 / 1.5）。
+     *
+     * 倍速是 ExoPlayer 的**播放器级**参数（不是单曲属性），所以：
+     *  - 立即持久化，保证「重开 App / 重新进播放页」后仍是这次设置的值；
+     *  - 装载新队列时重新下发一次（见 [setPlaylist]），否则换列表会被重置回 1×。
+     *
+     * 传入值不在预设档位内时按预设档次就近校正，避免 UI 与服务各存一份不一致的值。
      */
-    fun setShuffleEnabled(enabled: Boolean) {
-        shuffleEnabled = enabled
-        exoPlayer?.shuffleModeEnabled = enabled
+    fun setPlaybackSpeed(speed: Float) {
+        val normalized = SPEED_PRESETS.minByOrNull { kotlin.math.abs(it - speed) }
+            ?: DEFAULT_PLAYBACK_SPEED
+        playbackSpeed = normalized
+        PlaybackPrefs(this).savePlaybackSpeed(normalized)
+        exoPlayer?.setPlaybackSpeed(normalized)
         sendPlaybackUpdate()
     }
 
-    fun isShuffleEnabled(): Boolean = shuffleEnabled
+    fun getPlaybackSpeed(): Float = playbackSpeed
 
     private fun toExoRepeatMode(mode: RepeatMode): Int = when (mode) {
         RepeatMode.NONE -> Player.REPEAT_MODE_OFF
@@ -549,7 +560,7 @@ class PlaybackService : Service() {
             putExtra(EXTRA_DURATION, getDuration())
             putExtra(EXTRA_CURRENT_INDEX, currentIndex)
             putExtra(EXTRA_REPEAT_MODE, repeatMode.ordinal)
-            putExtra(EXTRA_SHUFFLE_ENABLED, shuffleEnabled)
+            putExtra(EXTRA_PLAYBACK_SPEED, playbackSpeed)
         }
         sendBroadcast(intent)
     }
@@ -731,7 +742,16 @@ class PlaybackService : Service() {
         const val EXTRA_DURATION = "duration"
         const val EXTRA_CURRENT_INDEX = "current_index"
         const val EXTRA_REPEAT_MODE = "repeat_mode"
-        const val EXTRA_SHUFFLE_ENABLED = "shuffle_enabled"
+        const val EXTRA_PLAYBACK_SPEED = "playback_speed"
+
+        /** 默认倍速（正常速度） */
+        const val DEFAULT_PLAYBACK_SPEED = 1.0f
+
+        /**
+         * 可选倍速档位。UI（播放页按钮的弹层）与服务共用这一份，
+         * 保证「菜单里能选的」和「服务能接受的」永远是同一组值。
+         */
+        val SPEED_PRESETS: List<Float> = listOf(0.5f, 0.75f, 1.0f, 1.25f, 1.5f)
         const val EXTRA_SLEEP_TIMER_REMAINING = "sleep_timer_remaining"
         const val EXTRA_SLEEP_TIMER_MODE = "sleep_timer_mode"
     }

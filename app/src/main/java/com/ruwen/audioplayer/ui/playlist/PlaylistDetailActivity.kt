@@ -10,11 +10,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,6 +42,8 @@ import com.ruwen.audioplayer.data.entity.displayName
 import com.ruwen.audioplayer.data.repository.PodcastRepository
 import com.ruwen.audioplayer.databinding.ActivityPlaylistDetailBinding
 import com.ruwen.audioplayer.ui.adapter.AudioItemAdapter
+import com.ruwen.audioplayer.ui.menu.MenuOption
+import com.ruwen.audioplayer.ui.menu.RuwenMenu
 import com.ruwen.audioplayer.ui.MiniPlayerController
 import com.ruwen.audioplayer.ui.player.PlayerActivity
 import com.ruwen.audioplayer.ui.podcast.formatBytes
@@ -271,17 +271,25 @@ class PlaylistDetailActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_select -> {
-                enterSelectionMode()
-                true
+        // 工具栏三点：用统一的 RuwenMenu 弹出「选择 / 排序」（图标右置，与全项目一致）
+        if (item.itemId == R.id.action_more) {
+            val anchor = binding.toolbar.findViewById<View>(R.id.action_more) ?: binding.toolbar
+            RuwenMenu.show(
+                context = this,
+                anchor = anchor,
+                options = listOf(
+                    MenuOption(OPTION_SELECT, getString(R.string.select_audio), R.drawable.ic_select_all),
+                    MenuOption(OPTION_SORT, getString(R.string.sort_playlist_by_title), R.drawable.ic_sort)
+                )
+            ) { option ->
+                when (option.id) {
+                    OPTION_SELECT -> enterSelectionMode()
+                    OPTION_SORT -> showSortDialog()
+                }
             }
-            R.id.action_sort -> {
-                showSortDialog()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+            return true
         }
+        return super.onOptionsItemSelected(item)
     }
 
     /**
@@ -885,28 +893,27 @@ class PlaylistDetailActivity : AppCompatActivity() {
     }
 
     private fun showAudioItemMenu(audioItem: AudioItem, view: View) {
-        val popup = PopupMenu(this, view, Gravity.END)
-        popup.setForceShowIcon(true)
-        popup.menuInflater.inflate(R.menu.audio_item_menu, popup.menu)
         // 生成中禁用“生成字幕”，避免重复触发导致重复占用内存（乃至进程被系统杀掉）
-        popup.menu.findItem(R.id.action_generate_subtitle)?.isEnabled =
-            audioItem.subtitleStatus != SubtitleStatus.GENERATING
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_delete -> {
-                    showDeleteAudioDialog(audioItem)
-                    true
-                }
-                R.id.action_generate_subtitle -> {
-                    if (audioItem.subtitleStatus != SubtitleStatus.GENERATING) {
-                        viewModel.generateSubtitle(audioItem.id)
-                    }
-                    true
-                }
-                else -> false
+        val canGenerate = audioItem.subtitleStatus != SubtitleStatus.GENERATING
+        RuwenMenu.show(
+            context = this,
+            anchor = view,
+            options = listOf(
+                MenuOption(
+                    OPTION_GENERATE_SUBTITLE,
+                    getString(R.string.generate_subtitle),
+                    R.drawable.ic_subtitle,
+                    enabled = canGenerate
+                ),
+                MenuOption(OPTION_DELETE_AUDIO, getString(R.string.delete), R.drawable.ic_delete)
+            )
+        ) { option ->
+            when (option.id) {
+                OPTION_DELETE_AUDIO -> showDeleteAudioDialog(audioItem)
+                OPTION_GENERATE_SUBTITLE ->
+                    if (canGenerate) viewModel.generateSubtitle(audioItem.id)
             }
         }
-        popup.show()
     }
 
     private fun showDeleteAudioDialog(audioItem: AudioItem) {
@@ -952,6 +959,12 @@ class PlaylistDetailActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_PLAYLIST_ID = "playlist_id"
+
+        // 菜单选项 id（仅本类内使用，故不用 R.id）
+        private const val OPTION_SELECT = 1
+        private const val OPTION_SORT = 2
+        private const val OPTION_GENERATE_SUBTITLE = 3
+        private const val OPTION_DELETE_AUDIO = 4
 
         private const val TAG = "PlaylistDetail"
 

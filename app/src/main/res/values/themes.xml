@@ -12,27 +12,25 @@
         <item name="android:statusBarColor">@color/purple_primary</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/background</item>
-        <!-- 溢出菜单（工具栏右上角三点）必须弹到按钮**下方**，不许盖住按钮。
-             AppCompat/Material3 的溢出菜单默认 overlapAnchor=true（面板压在锚点上），
-             播放列表详情页「三点弹框遮盖按钮」的根因即此。这里主题级关闭后，
-             所有页面的系统溢出菜单行为一致（与列表项上自定义 PopupMenu 的下弹表现相同）。 -->
+        <!-- 弹出菜单统一走这一套：白色圆角底 + 不与锚点重叠 + 从按钮下方 4dp 展开。
+             `popupMenuStyle` 管代码创建的菜单，`actionOverflowMenuStyle` 管工具栏系统溢出菜单，
+             两者指向同一个父样式，保证全项目菜单底色一致。
+             （早年只在两个布局上挂 app:popupTheme，其余页面没挂 —— 于是出现过三种底色。） -->
+        <item name="popupMenuStyle">@style/Widget.RuWen.PopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/Widget.RuWen.PopupMenu.Overflow</item>
     </style>
 
-    <!-- 溢出菜单：不与锚点重叠 + 少量垂直偏移，视觉上「从按钮下方展开」 -->
-    <style name="Widget.RuWen.PopupMenu.Overflow" parent="Widget.Material3.PopupMenu.Overflow">
+    <!-- 弹出菜单：白底 / 不与锚点重叠 / 从锚点下方 4dp 展开 -->
+    <style name="Widget.RuWen.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup_menu</item>
         <item name="android:overlapAnchor">false</item>
         <item name="android:dropDownVerticalOffset">4dp</item>
     </style>
+
+    <style name="Widget.RuWen.PopupMenu.Overflow" parent="Widget.RuWen.PopupMenu" />
 
     <style name="PlayerTheme" parent="Theme.RuWen">
         <item name="android:windowBackground">@color/player_background</item>
     </style>
 
-    <!-- 溢出菜单（如「字幕识别模型」）：浅色弹窗 + 深色文字，避免白底白字 -->
-    <style name="ThemeOverlay.RuWen.PopupMenu" parent="ThemeOverlay.Material3.Light">
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="colorOnSurface">@color/text_primary</item>
-        <item name="popupMenuBackground">@color/background</item>
-    </style>
 </resources>

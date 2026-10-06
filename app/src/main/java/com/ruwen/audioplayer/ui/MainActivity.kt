@@ -3,11 +3,9 @@ package com.ruwen.audioplayer.ui
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,6 +18,8 @@ import com.ruwen.audioplayer.R
 import com.ruwen.audioplayer.data.db.AppDatabase
 import com.ruwen.audioplayer.databinding.ActivityMainBinding
 import com.ruwen.audioplayer.ui.home.PlaylistHomeFragment
+import com.ruwen.audioplayer.ui.menu.MenuOption
+import com.ruwen.audioplayer.ui.menu.RuwenMenu
 import com.ruwen.audioplayer.ui.podcast.PodcastFragment
 import com.ruwen.audioplayer.ui.search.SearchFragment
 import com.ruwen.audioplayer.util.OrphanCleaner
@@ -129,29 +129,24 @@ class MainActivity : AppCompatActivity() {
     /**
      * 设置菜单（参考 Salt Player）：在三点按钮**左下方**弹出小卡片菜单，
      * 两项 = 模型设置（原「字幕识别模型」）/ 清除缓存（清理孤儿文件）。
-     * Gravity.END 让菜单右缘对齐按钮右缘 → 视觉上出现在按钮左下方。
+     * 由 RuwenMenu 统一渲染：菜单右缘对齐三点圆点所在的竖线，图标在条目最右侧、中性灰。
      */
     private fun showSettingsMenu(anchor: MenuItem) {
         val toolbar = binding.toolbar
         val anchorView = toolbar.findViewById<View>(R.id.action_settings) ?: toolbar
-        val popup = PopupMenu(this, anchorView, Gravity.END)
-        popup.setForceShowIcon(true)
-        popup.menu.add(Menu.NONE, 1, Menu.NONE, R.string.menu_whisper_model)
-        popup.menu.add(Menu.NONE, 2, Menu.NONE, R.string.menu_clear_cache)
-        popup.setOnMenuItemClickListener { clicked ->
-            when (clicked.itemId) {
-                1 -> {
-                    WhisperModelSettingsDialog.show(this)
-                    true
-                }
-                2 -> {
-                    confirmClearCache()
-                    true
-                }
-                else -> false
+        RuwenMenu.show(
+            context = this,
+            anchor = anchorView,
+            options = listOf(
+                MenuOption(OPTION_MODEL_SETTINGS, getString(R.string.menu_whisper_model), R.drawable.ic_tune),
+                MenuOption(OPTION_CLEAR_CACHE, getString(R.string.menu_clear_cache), R.drawable.ic_cleaning)
+            )
+        ) { option ->
+            when (option.id) {
+                OPTION_MODEL_SETTINGS -> WhisperModelSettingsDialog.show(this)
+                OPTION_CLEAR_CACHE -> confirmClearCache()
             }
         }
-        popup.show()
     }
 
     /** 清除缓存：先确认，再在 IO 线程清理孤儿文件，完成后提示数量 */
@@ -209,5 +204,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_PERMISSIONS = 100
+
+        // 设置菜单选项 id（仅本类内使用，故不用 R.id）
+        private const val OPTION_MODEL_SETTINGS = 1
+        private const val OPTION_CLEAR_CACHE = 2
     }
 }
